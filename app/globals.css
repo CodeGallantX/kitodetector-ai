@@ -13,13 +13,11 @@
     --foreground: #ededed;
   }
 } */
-
+/* 
 h1, h2, h3, h4, h5, h6 {
-  font-family: "Poppins", serif;
+  font-family: "Inter", serif;
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: "Outfit", Helvetica, sans-serif;
-}
+body, p, a {
+  font-family: "Roboto mono",  sans-serif;
+} */
