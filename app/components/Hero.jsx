@@ -1,22 +1,56 @@
-import Link from 'next/link';
-export default function Header() {
+import Link from "next/link";
+// import { motion } from "framer-motion";
+
+const Hero = () => {
   return (
     <section className="flex flex-row items-center justify-between text-left py-40 bg-gray-900 min-h-screen px-4 md:px-8 lg:px-16 xl:px-24 relative overflow-hidden">
-      <div>
-      <h1 className="text-4xl sm:text-6xl font-bold mb-6 mt-4 text-white z-10 w-full max-w-md lg:max-w-2xl">
+      
+      {/* Background Blurry Blobs */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div 
+          className="absolute w-[300px] h-[300px] bg-teal-500 rounded-full filter blur-3xl opacity-50"
+          // initial={{ x: "-30%", y: "-20%", scale: 1 }}
+          // animate={{ x: ["-20%", "10%", "-10%"], y: ["-10%", "20%", "-10%"], scale: [1, 1.2, 1] }}
+          // transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <div 
+          className="absolute w-[200px] h-[200px] bg-purple-500 rounded-full filter blur-3xl opacity-50 bottom-10 right-10"
+          // initial={{ x: "30%", y: "20%", scale: 1 }}
+          // animate={{ x: ["20%", "-10%", "15%"], y: ["10%", "-15%", "10%"], scale: [1, 1.3, 1] }}
+          // transition={{ duration:4 , repeat: Infinity, ease: "easeInOut" }}
+        />
+        <div 
+          className="absolute w-[250px] h-[250px] bg-blue-200 dark:bg-[#555] rounded-full filter blur-3xl opacity-50 top-20 left-20"
+          // initial={{ x: "-20%", y: "30%", scale: 1 }}
+          // animate={{ x: ["-15%", "15%", "-10%"], y: ["30%", "10%", "20%"], scale: [1, 1.1, 1] }}
+          // transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+        />
+      </div>
+
+      {/* Hero Content */}
+      <div 
+        // initial={{ opacity: 0, y: 50 }} 
+        // animate={{ opacity: 1, y: 0 }} 
+        // transition={{ duration: 1 }}
+        className="z-10"
+      >
+         <h1 className="text-4xl sm:text-6xl font-bold mb-6 mt-4 text-white z-10 w-full max-w-md lg:max-w-2xl">
       Welcome to KitoDeck AI – Identify and Avoid Kito Predators
       </h1>
       <p className="text-xl sm:text-2xl mb-8 max-w-xl mx-auto text-white z-10 opacity-90">
       KitoDeck AI uses advanced AI to detect and prevent Kito threats, keeping you safe through smart analysis and real-time alerts.
       </p>
-      <Link
+
+        {/* CTA Button */}
+        <Link
         href="/auth/signup"
         className="bg-teal-500 px-8 py-3 rounded-full text-lg text-white transition transform hover:scale-105 z-10"
         >
         Sign Up for Free
       </Link>
-        </div>
-<div className="" ></div>
+      </div>
     </section>
   );
 }
+
+export default Hero;

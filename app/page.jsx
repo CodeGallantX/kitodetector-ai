@@ -1,6 +1,6 @@
 import Header from "@/app/components/Header"
 import Hero from "@/app/components/Hero"
-// import Features from "@/app/components/Features"
+import Features from "@/app/components/KeyFeatures"
 import Footer from "@/app/components/Footer"
 
 const App = () => {
@@ -8,7 +8,7 @@ const App = () => {
         <div>
             <Header />
             <Hero />
-            {/* <Features /> */}
+            <Features />
             <Footer />
         </div>
     )
