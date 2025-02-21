@@ -55,6 +55,7 @@ const Features = () => {
                 <div key={index} className="flex flex-col items-start justify-center rounded-md bg-gray-700 border border-gray-600 px-2 py-4">
                     <div className="">
                         <h2>{plans.name}</h2>
+                        <ul></ul>
                     </div>
                 </div>
             )}
