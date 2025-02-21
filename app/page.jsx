@@ -1,6 +1,7 @@
 import Header from "@/app/components/Header"
 import Hero from "@/app/components/Hero"
-import Features from "@/app/components/KeyFeatures"
+import Pricing from "@/app/components/Pricing"
+// import Features from "@/app/components/KeyFeatures"
 import Footer from "@/app/components/Footer"
 
 const App = () => {
@@ -8,7 +9,8 @@ const App = () => {
         <div>
             <Header />
             <Hero />
-            <Features />
+            {/* <Features /> */}
+            <Pricing />
             <Footer />
         </div>
     )
