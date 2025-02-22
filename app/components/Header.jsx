@@ -14,7 +14,7 @@ const Header = () => {
     return (
         <div>
             <header className="px-6 md:px-8 lg:px-16 xl:px-24">
-                <div className="z-30 px-6 lg:px-10 py-4 fixed backdrop-blur-xl w-11/12 lg:5/6 left-1/2 -translate-x-1/2 bg-gray-600/50 top-6 rounded-full flex flex-row items-center justify-between ">
+                <div className="z-30 px-6 lg:px-10 py-4 md:py-6 fixed backdrop-blur-md w-11/12 lg:5/6 left-1/2 -translate-x-1/2 bg-gray-900/30 top-6 rounded-full flex flex-row items-center justify-between ">
                     <h1 href="/" className="text-2xl md:text-3xl font-bold text-white font-outfit">
                         Kito Deck AI
                     </h1>
