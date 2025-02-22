@@ -108,10 +108,10 @@ const Features = () => {
           <textarea
             value={chatText}
             onChange={(e) => setChatText(e.target.value)}
-            className="w-full p-2 rounded-md bg-gray-800 text-white outline-none focus:ring-1 focus:ring-teal-500"
+            className="w-full p-2 rounded-md bg-gray-800 text-white outline-none focus:ring-1 focus:ring-teal-500 transition-all duration-300 ease-in-out"
             placeholder="Paste chat transcript here..."
           />
-          <input
+          {/* <input
             type="file"
             className="mt-3 block text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-teal-600 file:text-white hover:file:bg-teal-700"
             accept=".txt"
@@ -120,7 +120,7 @@ const Features = () => {
               reader.onload = (ev) => setChatText(ev.target.result);
               reader.readAsText(e.target.files[0]);
             }}
-          />
+          /> */}
           <button onClick={handleChatAnalyze} className="mt-4 bg-teal-600 px-4 py-2 rounded-lg hover:bg-teal-700">
             Analyze Chat
           </button>
