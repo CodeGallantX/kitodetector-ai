@@ -35,7 +35,7 @@ const FAQ = () => {
             <button
               onClick={() => toggleFaq(index)}
               className={`w-full text-left py-4 px-6 flex justify-between items-center rounded-xl font-bold transition-all duration-300 ${
-                activeIndex === index ? "bg-teal-600 text-white" : "bg-gray-100 text-gray-900"
+                activeIndex === index ? "bg-teal-600 text-white rounded-t-xl rounded-b-none" : "bg-gray-100 text-gray-900"
               }`}
             >
               <span>{faq.question}</span>
@@ -49,7 +49,7 @@ const FAQ = () => {
             {/* Answer Section */}
             <div
               className={`overflow-hidden transition-all duration-500 ease-in-out ${
-                activeIndex === index ? "max-h-56 opacity-100 py-4 px-6 bg-white rounded-b-xl" : "max-h-0 opacity-0"
+                activeIndex === index ? "max-h-40 opacity-100 py-4 px-6 bg-white rounded-b-xl" : "max-h-0 opacity-0"
               }`}
             >
               <p className="text-gray-700">{faq.answer}</p>
