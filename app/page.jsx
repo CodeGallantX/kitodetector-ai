@@ -1,3 +1,4 @@
+import Preloader from "@/app/components/Preloader"
 import Header from "@/app/components/Header"
 import Hero from "@/app/components/Hero"
 import Features from "@/app/components/Features"
@@ -9,7 +10,7 @@ import Footer from "@/app/components/Footer"
 
 const App = () => {
     return (
-        <div>
+        <Preloader>
             <Header />
             <Hero />
             <Features />
@@ -18,7 +19,7 @@ const App = () => {
             <ScrollToTop />
             <HelpCentre />
             <Footer />
-        </div>
+        </Preloader>
     )
 }
 

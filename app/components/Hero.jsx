@@ -3,7 +3,7 @@ import Link from "next/link";
 
 const Hero = () => {
   return (
-    <section className="py-40 bg-gray-900 min-h-screen px-6 md:px-8 lg:px-16 xl:px-24 relative overflow-hidden">
+    <section className="py-40 light:bg-gray-50 dark:bg-gray-900 min-h-screen px-6 md:px-8 lg:px-16 xl:px-24 relative overflow-hidden">
 
       {/* Background Blurry Blobs */}
       <div className="absolute inset-0 overflow-hidden">
