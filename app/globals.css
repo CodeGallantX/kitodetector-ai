@@ -2,9 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@font-face {
+  font-family: "DM Sans";
+  src: url("./fonts/DMSans-VariableFont_opsz,wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("./fonts/SpaceGrotesk-VariableFont_wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+/* Apply Fonts */
+.font-dmSans {
+  font-family: "DM Sans", sans-serif;
+}
+
+.font-spaceGrotesk {
+  font-family: "Space Grotesk", sans-serif;
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -19,5 +37,5 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 body, p, a {
-  font-family: "Outfit",  sans-serif;
+  font-family: "DM Sans",  sans-serif;
 }
