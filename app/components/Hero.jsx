@@ -14,16 +14,10 @@ const Hero = () => {
         transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
         />
         <div
-          className="absolute w-[200px] h-[200px] bg-purple-500 rounded-full filter blur-3xl opacity-50 bottom-10 right-10"
+          className="absolute w-[200px] h-[200px] bg-purple-500 rounded-full filter blur-3xl opacity-50 bottom-14 right-10"
         initial={{ x: "30%", y: "20%", scale: 1 }}
         animate={{ x: ["20%", "-10%", "15%"], y: ["10%", "-15%", "10%"], scale: [1, 1.3, 1] }}
         transition={{ duration:4 , repeat: Infinity, ease: "easeInOut" }}
-        />
-        <div
-          className="absolute w-[250px] h-[250px] bg-emerald-600 rounded-full filter blur-3xl opacity-50 bottom-10 left-0 hidden"
-        // initial={{ x: "-20%", y: "30%", scale: 1 }}
-        // animate={{ x: ["-15%", "15%", "-10%"], y: ["30%", "10%", "20%"], scale: [1, 1.1, 1] }}
-        // transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
         />
       </div>
 

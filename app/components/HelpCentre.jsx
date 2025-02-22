@@ -21,7 +21,7 @@ const helpTopics = [
 
 const HelpCenter = () => {
   return (
-    <section className="bg-gray-900 text-white py-16 px-6 md:px-12 lg:px-20">
+    <section id="helpCenter" className="bg-gray-900 text-white py-16 px-6 md:px-12 lg:px-20">
       <div className="max-w-4xl mx-auto text-center">
         <h2 className="text-4xl font-bold mb-6">Help Center</h2>
         <p className="text-lg text-gray-300">

@@ -28,7 +28,7 @@ const Header = () => {
                         <Link href="#helpCenter">Help Center</Link>
                     </nav>
                     <Link
-                        href="/login"
+                        href="/auth/signup"
                         className="hidden lg:block bg-teal-500 text-white px-6 py-3 rounded-full font-medium hover:scale-105 transition"
                     >
                         Get Started

@@ -64,7 +64,7 @@ const Features = () => {
   };
 
   return (
-    <section className="px-6 md:px-8 lg:px-16 xl:px-24 py-16 bg-gray-900 text-white">
+    <section id="features" className="px-6 md:px-8 lg:px-16 xl:px-24 py-16 bg-gray-900 text-white">
       <h2 className="text-4xl font-bold text-center mb-10">Features</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {features.map((feature, index) => (
