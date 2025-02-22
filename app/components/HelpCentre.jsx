@@ -1,52 +1,40 @@
 "use client";
-import { useState } from "react";
-import { FaChevronDown } from "react-icons/fa";
+import { FaShieldAlt, FaUsers, FaSearch } from "react-icons/fa";
 
 const helpTopics = [
   {
     title: "Kito Awareness",
-    content:
-      "Stay informed on Kito scams, tactics, and prevention methods. Learn how to stay safe online and avoid predators.",
+    description: "Learn how to identify and report Kito activities to keep yourself safe online.",
+    icon: <FaShieldAlt className="text-teal-400 text-4xl" />,
   },
   {
     title: "KlickCircle",
-    content:
-      "A community-driven feature to share reports and experiences with others for collective safety.",
+    description: "A secure community to discuss experiences and share scam prevention strategies.",
+    icon: <FaUsers className="text-blue-400 text-4xl" />,
   },
   {
     title: "Twinningle",
-    content:
-      "A tool that scans chat transcripts and interactions to identify red flags in conversations.",
+    description: "A database of reported Kito cases and AI-powered scam detection tools.",
+    icon: <FaSearch className="text-yellow-400 text-4xl" />,
   },
 ];
 
-const HelpCentre = () => {
-  const [activeIndex, setActiveIndex] = useState(null);
-
-  const toggleDropdown = (index) => {
-    setActiveIndex(activeIndex === index ? null : index);
-  };
-
+const HelpCenter = () => {
   return (
-    <section className="bg-gray-900 text-white py-14 px-6 md:px-8 lg:px-16 xl:px-24">
-      <h2 className="text-4xl font-bold text-center mb-10">Help Center</h2>
-      <div className="max-w-3xl mx-auto space-y-6">
+    <section className="bg-gray-900 text-white py-16 px-6 md:px-12 lg:px-20">
+      <div className="max-w-4xl mx-auto text-center">
+        <h2 className="text-4xl font-bold mb-6">Help Center</h2>
+        <p className="text-lg text-gray-300">
+          Get support and resources for Kito Awareness, KlickCircle, and Twinningle.
+        </p>
+      </div>
+
+      <div className="mt-10 grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
         {helpTopics.map((topic, index) => (
-          <div key={index} className="bg-white/10 backdrop-blur-lg p-5 rounded-lg">
-            <button
-              onClick={() => toggleDropdown(index)}
-              className="w-full flex justify-between items-center text-lg font-semibold text-white hover:text-teal-400 transition"
-            >
-              {topic.title}
-              <FaChevronDown
-                className={`transition-transform duration-300 ${
-                  activeIndex === index ? "rotate-180 text-teal-400" : "text-white"
-                }`}
-              />
-            </button>
-            {activeIndex === index && (
-              <p className="mt-3 text-gray-300">{topic.content}</p>
-            )}
+          <div key={index} className="bg-gray-800 p-6 rounded-xl shadow-lg text-center">
+            <div className="mb-4 flex justify-center">{topic.icon}</div>
+            <h3 className="text-xl font-semibold mb-2">{topic.title}</h3>
+            <p className="text-gray-300">{topic.description}</p>
           </div>
         ))}
       </div>
@@ -54,4 +42,4 @@ const HelpCentre = () => {
   );
 };
 
-export default HelpCentre;
+export default HelpCenter;
