@@ -18,9 +18,8 @@ const faqs = [
   { question: "How often is your database updated?", answer: "Our database is updated regularly with verified reports and AI improvements." }
 ];
 
-
 const FAQ = () => {
-  const [activeIndex, setActiveIndex] = useState(0); // First question is open
+  const [activeIndex, setActiveIndex] = useState(null);
 
   const toggleFaq = (index) => {
     setActiveIndex(activeIndex === index ? null : index);
@@ -32,10 +31,11 @@ const FAQ = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 items-start justify-center gap-6">
         {faqs.map((faq, index) => (
           <div key={index} className="w-full">
+            {/* Question Button */}
             <button
               onClick={() => toggleFaq(index)}
               className={`w-full text-left py-4 px-6 flex justify-between items-center rounded-xl font-bold transition-all duration-300 ${
-                activeIndex === index ? "bg-teal-600 text-white z-10" : "bg-gray-100 text-gray-900"
+                activeIndex === index ? "bg-teal-600 text-white" : "bg-gray-100 text-gray-900"
               }`}
             >
               <span>{faq.question}</span>
@@ -46,9 +46,10 @@ const FAQ = () => {
               />
             </button>
 
+            {/* Answer Section */}
             <div
               className={`overflow-hidden transition-all duration-500 ease-in-out ${
-                activeIndex === index ? "h-full max-h-56 pt-10 -translate-y-6 opacity-100 py-4 px-6 bg-white rounded-b-xl" : "max-h-0 opacity-0"
+                activeIndex === index ? "max-h-56 opacity-100 py-4 px-6 bg-white rounded-b-xl" : "max-h-0 opacity-0"
               }`}
             >
               <p className="text-gray-700">{faq.answer}</p>
