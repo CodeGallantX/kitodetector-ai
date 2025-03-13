@@ -1,5 +1,5 @@
 import Link from "next/link";
-// import { motion } from "framer-motion";
+import { motion } from "framer-motion";
 
 const Hero = () => {
   return (
@@ -7,13 +7,13 @@ const Hero = () => {
 
       {/* Background Blurry Blobs */}
       <div className="absolute inset-0 overflow-hidden">
-        <div
+        <motion.div
           className="absolute w-[300px] h-[300px] bg-teal-500 rounded-full filter blur-3xl opacity-50"
         initial={{ x: "-30%", y: "-20%", scale: 1 }}
         animate={{ x: ["-20%", "10%", "-10%"], y: ["0%", "30%", "-10%"], scale: [1, 1.2, 1] }}
         transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
         />
-        <div
+        <motion.div
           className="absolute w-[200px] h-[200px] bg-purple-500 rounded-full filter blur-3xl opacity-50 bottom-14 right-10"
         initial={{ x: "30%", y: "20%", scale: 1 }}
         animate={{ x: ["20%", "-10%", "15%"], y: ["10%", "-15%", "10%"], scale: [1, 1.3, 1] }}
@@ -22,7 +22,7 @@ const Hero = () => {
       </div>
 
       {/* Hero Content */}
-      <div
+      <motion.div
         initial={{ opacity: 0, y: 50 }} 
         animate={{ opacity: 1, y: 0 }} 
         transition={{ duration: 1 }}
@@ -42,7 +42,7 @@ const Hero = () => {
         >
           Sign Up for Free
         </Link>
-      </div>
+      </motion.div>
     </section>
   );
 }
