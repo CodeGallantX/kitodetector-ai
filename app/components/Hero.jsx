@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { motion } from "framer-motion";
+// import { motion } from "framer-motion";
 
 const Hero = () => {
   return (
     <section className="py-40 light:bg-gray-50 dark:bg-gray-900 min-h-screen px-6 md:px-8 lg:px-16 xl:px-24 relative overflow-hidden">
 
       {/* Background Blurry Blobs */}
-      <div className="absolute inset-0 overflow-hidden">
+      {/* <div className="absolute inset-0 overflow-hidden">
         <motion.div
           className="absolute w-[300px] h-[300px] bg-teal-500 rounded-full filter blur-3xl opacity-50"
         initial={{ x: "-30%", y: "-20%", scale: 1 }}
@@ -19,14 +19,14 @@ const Hero = () => {
         animate={{ x: ["20%", "-10%", "15%"], y: ["10%", "-15%", "10%"], scale: [1, 1.3, 1] }}
         transition={{ duration:4 , repeat: Infinity, ease: "easeInOut" }}
         />
-      </div>
+      </div> */}
 
       {/* Hero Content */}
-      <motion.div
-        initial={{ opacity: 0, y: 50 }} 
-        animate={{ opacity: 1, y: 0 }} 
-        transition={{ duration: 1 }}
-        className="z-10 flex flex-col items-center lg:items-start justify-center text-center lg:text-left"
+      <div
+        // initial={{ opacity: 0, y: 50 }} 
+        // animate={{ opacity: 1, y: 0 }} 
+        // transition={{ duration: 1 }}
+        // className="z-10 flex flex-col items-center lg:items-start justify-center text-center lg:text-left"
       >
         <h1 className="text-4xl sm:text-6xl font-bold mb-6 mt-4 text-white z-10 w-full max-w-md md:max-w-2xl">
           Welcome to KitoDeck AI – Identify and Avoid Kito Predators
@@ -42,7 +42,7 @@ const Hero = () => {
         >
           Sign Up for Free
         </Link>
-      </motion.div>
+      </div>
     </section>
   );
 }

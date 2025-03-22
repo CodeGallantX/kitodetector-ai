@@ -1,3 +1,5 @@
+
+
 "use client";
 import { useState } from "react";
 import { FaCamera, FaComments, FaHistory, FaShieldAlt, FaFlag, FaUpload } from "react-icons/fa";
@@ -66,9 +68,9 @@ const Features = () => {
   return (
     <section id="features" className="px-6 md:px-8 lg:px-16 xl:px-24 py-16 bg-gray-900 text-white">
       <h2 className="text-4xl font-bold text-center mb-10">Features</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {features.map((feature, index) => (
-          <div key={index} className="p-6 light:bg-gray-800 yydark:bg-white/10 backdrop-blur-lg rounded-2xl shadow-lg transition-transform transform hover:scale-105">
+          <div key={index} className="p-6 bg-white/10 backdrop-blur-lg rounded-2xl shadow-lg transition-transform transform hover:scale-105">
             <div className="text-3xl text-teal-400 mb-4">{feature.icon}</div>
             <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
             <p className="text-gray-300">{feature.description}</p>
