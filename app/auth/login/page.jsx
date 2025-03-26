@@ -1,10 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa6';
+import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaChevronLeft } from 'react-icons/fa6';
 import Link from 'next/link';
+import { useRouter } from "next/navigation";
+import { useTheme } from 'next-themes';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function LoginPage() {
+  const { theme } = useTheme();
+  const router = useRouter();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -60,40 +66,107 @@ export default function LoginPage() {
     if (validateForm()) {
       setIsLoading(true);
       try {
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        console.log('Login successful:', formData);
-        alert('Login successful!');
-        // Redirect or handle successful login here
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || 'Login failed');
+        }
+
+        // Store user data and token
+        localStorage.setItem('user', JSON.stringify(data.user));
+        localStorage.setItem('token', data.token);
+
+        toast.success('Login successful!', {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: theme === 'dark' ? 'dark' : 'light',
+        });
+
+        // Redirect to dashboard after successful login
+        setTimeout(() => {
+          router.push('/dashboard');
+        }, 2000);
+
       } catch (error) {
         console.error('Login error:', error);
-        alert('Login failed. Please try again.');
+        toast.error(error.message || 'Login failed. Please try again.', {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: theme === 'dark' ? 'dark' : 'light',
+        });
       } finally {
         setIsLoading(false);
       }
     }
   };
 
+  // Theme-based styles
+  const containerBg = theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50';
+  const cardBg = theme === 'dark' ? 'bg-gray-800' : 'bg-white';
+  const textColor = theme === 'dark' ? 'text-white' : 'text-gray-900';
+  const secondaryTextColor = theme === 'dark' ? 'text-gray-300' : 'text-gray-700';
+  const borderColor = theme === 'dark' ? 'border-gray-700' : 'border-gray-300';
+  const inputBg = theme === 'dark' ? 'bg-gray-700 text-white' : 'bg-white text-gray-900';
+  const dividerColor = theme === 'dark' ? 'border-gray-700' : 'border-gray-300';
+  const dividerTextBg = theme === 'dark' ? 'bg-gray-800' : 'bg-white';
+
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Sign in to your account
+    <div className={`relative min-h-screen ${containerBg} flex flex-col justify-center py-12 sm:px-6 lg:px-8 transition-colors duration-300`}>
+      {/* Toast Container */}
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme={theme === 'dark' ? 'dark' : 'light'}
+      />
+      
+      <button 
+        className={`absolute top-8 left-6 p-2 rounded-lg border ${theme === 'dark' ? 'border-gray-600 hover:border-teal-500' : 'border-gray-300 hover:border-teal-600'} hover:bg-teal-600 transition-colors duration-300 ease-in-out ${textColor}`}
+        onClick={() => router.back()}
+      >
+        <FaChevronLeft className="inline-block"/> 
+        Back
+      </button>
+      
+      <div className="w-full sm:mx-auto sm:w-full sm:max-w-md px-6 sm:ox-0">
+        <h2 className={`mt-6 text-left sm:text-center text-3xl font-extrabold ${textColor}`}>
+          Welcome Back! <br />Sign in to continue
         </h2>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+      <div className="mt-8 px-6 sm:mx-auto sm:w-full sm:max-w-md md:max-w-lg">
+        <div className={`${cardBg} py-8 px-4 shadow sm:rounded-2xl sm:px-10 transition-colors duration-300 ${theme === 'dark' ? 'shadow-lg' : 'shadow-sm'}`}>
           <form className="space-y-6" onSubmit={handleSubmit}>
             {/* Email Field */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="email" className={`block text-sm font-medium ${secondaryTextColor}`}>
                 Email address
               </label>
-              <div className="mt-1 relative rounded-md shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaEnvelope className="h-5 w-5 text-gray-400" />
-                </div>
+              <fieldset className="mt-1 relative rounded-md shadow-sm">
                 <input
                   id="email"
                   name="email"
@@ -101,21 +174,18 @@ export default function LoginPage() {
                   autoComplete="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`block w-full pl-10 pr-3 py-2 border ${errors.email ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
+                  className={`block w-full px-3 py-2 ${inputBg} border ${errors.email ? 'border-red-300' : borderColor} rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 sm:text-sm`}
                 />
-              </div>
+              </fieldset>
               {errors.email && <p className="mt-2 text-sm text-red-600">{errors.email}</p>}
             </div>
 
             {/* Password Field */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="password" className={`block text-sm font-medium ${secondaryTextColor}`}>
                 Password
               </label>
-              <div className="mt-1 relative rounded-md shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaLock className="h-5 w-5 text-gray-400" />
-                </div>
+              <fieldset className="mt-1 relative rounded-md shadow-sm">
                 <input
                   id="password"
                   name="password"
@@ -123,13 +193,13 @@ export default function LoginPage() {
                   autoComplete="current-password"
                   value={formData.password}
                   onChange={handleChange}
-                  className={`block w-full pl-10 pr-10 py-2 border ${errors.password ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
+                  className={`block w-full px-3 py-2 ${inputBg} border ${errors.password ? 'border-red-300' : borderColor} rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 sm:text-sm`}
                 />
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="text-gray-400 hover:text-gray-500 focus:outline-none"
+                    className={`${theme === 'dark' ? 'text-gray-300 hover:text-gray-100' : 'text-gray-400 hover:text-gray-500'} focus:outline-none`}
                   >
                     {showPassword ? (
                       <FaEyeSlash className="h-5 w-5" />
@@ -138,7 +208,7 @@ export default function LoginPage() {
                     )}
                   </button>
                 </div>
-              </div>
+              </fieldset>
               {errors.password && <p className="mt-2 text-sm text-red-600">{errors.password}</p>}
             </div>
 
@@ -149,15 +219,15 @@ export default function LoginPage() {
                   id="remember-me"
                   name="remember-me"
                   type="checkbox"
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  className={`h-4 w-4 text-teal-600 focus:ring-teal-500 ${borderColor} rounded`}
                 />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
+                <label htmlFor="remember-me" className={`ml-2 block text-sm ${textColor}`}>
                   Remember me
                 </label>
               </div>
 
               <div className="text-sm">
-                <Link href="/forgot-password" className="font-medium text-blue-600 hover:text-blue-500">
+                <Link href="/forgot-password" className="font-medium text-teal-500 hover:text-teal-400">
                   Forgot your password?
                 </Link>
               </div>
@@ -168,14 +238,11 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
+                className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-teal-500 hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
               >
                 {isLoading ? (
                   <>
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
+                    <span className="h-3 w-3 p-2 border-b-2 border-b-white animate-spin rounded-full mr-2"></span>
                     Signing in...
                   </>
                 ) : 'Sign in'}
@@ -186,12 +253,12 @@ export default function LoginPage() {
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300" />
+                <div className={`w-full border-t ${dividerColor}`} />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">
+                <span className={`px-2 ${dividerTextBg} ${secondaryTextColor}`}>
                   Don't have an account?{' '}
-                  <Link href="/auth/signup" className="font-medium text-blue-600 hover:text-blue-500">
+                  <Link href="/auth/signup" className="font-medium text-teal-500 hover:text-teal-400">
                     Sign up
                   </Link>
                 </span>

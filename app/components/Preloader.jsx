@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useTheme } from "next-themes";
 
 const Preloader = ({ children }) => {
     const [loading, setLoading] = useState(true);
@@ -12,6 +13,8 @@ const Preloader = ({ children }) => {
 
         return () => clearTimeout(timer);
     }, []);
+
+    const theme = useTheme();
 
     return (
         <div className="relative min-h-screen bg-gray-900 text-white flex justify-center items-center">

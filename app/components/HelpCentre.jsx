@@ -13,12 +13,12 @@ const helpTopics = [
   {
     title: "KlickCircle",
     description: "A secure community to discuss experiences and share scam prevention strategies.",
-    icon: <FaUsers className="text-blue-400 text-4xl" />,
+    icon: <FaUsers className="text-teal-400 text-4xl" />,
   },
   {
     title: "Twinningle",
     description: "A database of reported Kito cases and AI-powered scam detection tools.",
-    icon: <FaSearch className="text-yellow-400 text-4xl" />,
+    icon: <FaSearch className="text-teal-400 text-4xl" />,
   },
 ];
 
@@ -45,7 +45,7 @@ const itemVariants = {
 };
 
 const HelpCenter = () => {
-  const { theme } = useTheme(); // Access current theme
+  const { theme } = useTheme(); // Access current theme 
 
   // Determine background and text colors based on theme
   const sectionClasses = theme === "dark" 
