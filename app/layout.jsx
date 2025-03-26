@@ -1,4 +1,5 @@
 import "./globals.css";
+import { ThemeProvider } from "next-themes";
 
 export const metadata = {
   title: "KitoDeck AI - AI-Powered Scam Detection",
@@ -35,7 +36,11 @@ export default function RootLayout({ children }) {
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <meta name="robots" content="index, follow" />
       </head>
-      <body className="font-dmSans antialiased">{children}</body>
+      <body className="font-dmSans antialiased">
+        <ThemeProvider attribute="class" defaultTheme="system" value={{ light: "light", dark: "dark" }}>
+          {children}
+        </ThemeProvider>
+        </body>
     </html>
   );
 }
