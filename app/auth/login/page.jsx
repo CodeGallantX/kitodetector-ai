@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useTheme } from 'next-themes';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios';
 
 export default function LoginPage() {
   const { theme } = useTheme();
@@ -66,19 +67,13 @@ export default function LoginPage() {
     if (validateForm()) {
       setIsLoading(true);
       try {
-        const response = await fetch('/api/auth/login', {
-          method: 'POST',
+        const response = await axios.post('http://localhost:8000/api/auth/login', formData, {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(formData),
         });
 
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.message || 'Login failed');
-        }
+        const { data } = response;
 
         // Store user data and token
         localStorage.setItem('user', JSON.stringify(data.user));
@@ -102,7 +97,8 @@ export default function LoginPage() {
 
       } catch (error) {
         console.error('Login error:', error);
-        toast.error(error.message || 'Login failed. Please try again.', {
+        const errorMessage = error.response?.data?.message || 'Login failed. Please try again.';
+        toast.error(errorMessage, {
           position: "top-center",
           autoClose: 3000,
           hideProgressBar: false,

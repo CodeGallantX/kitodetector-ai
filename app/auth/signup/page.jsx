@@ -16,21 +16,16 @@ export default function SignUpPage() {
     username: '',
     email: '',
     password: '',
-    confirmPassword: '',
   });
 
   const [errors, setErrors] = useState({
     username: '',
     email: '',
     password: '',
-    confirmPassword: '',
   });
 
-  const [showPasswords, setShowPasswords] = useState({
-    password: false,
-    confirmPassword: false,
-  });
-
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordFocused, setPasswordFocused] = useState(false);
   const [passwordValidations, setPasswordValidations] = useState({
     length: false,
     uppercase: false,
@@ -41,13 +36,6 @@ export default function SignUpPage() {
 
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const togglePasswordVisibility = (field) => {
-    setShowPasswords((prev) => ({
-      ...prev,
-      [field]: !prev[field],
-    }));
-  };
 
   const validatePassword = (password) => {
     const validations = {
@@ -79,7 +67,6 @@ export default function SignUpPage() {
       username: '',
       email: '',
       password: '',
-      confirmPassword: '',
     };
 
     if (!formData.username.trim()) {
@@ -106,11 +93,6 @@ export default function SignUpPage() {
       valid = false;
     }
 
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
-      valid = false;
-    }
-
     if (!acceptedTerms) {
       toast.error('You must accept the terms & conditions');
       valid = false;
@@ -127,7 +109,7 @@ export default function SignUpPage() {
 
     if (validateForm()) {
       try {
-        const response = await axios.post('/api/auth/signup', {
+        const response = await axios.post('http://localhost:8000/api/auth/signup', {
           username: formData.username,
           email: formData.email,
           password: formData.password
@@ -156,6 +138,27 @@ export default function SignUpPage() {
       setIsSubmitting(false);
     }
   };
+
+  // Password validation tags component
+  const PasswordValidationTags = () => (
+    <div className={`mt-2 flex flex-wrap gap-2 transition-opacity duration-200 ${passwordFocused ? 'opacity-100' : 'opacity-0'}`}>
+      <span className={`text-xs px-2 py-1 rounded-full ${passwordValidations.length ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'}`}>
+        {passwordValidations.length ? '✓' : '✗'} 8+ chars
+      </span>
+      <span className={`text-xs px-2 py-1 rounded-full ${passwordValidations.uppercase ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'}`}>
+        {passwordValidations.uppercase ? '✓' : '✗'} Uppercase
+      </span>
+      <span className={`text-xs px-2 py-1 rounded-full ${passwordValidations.lowercase ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'}`}>
+        {passwordValidations.lowercase ? '✓' : '✗'} Lowercase
+      </span>
+      <span className={`text-xs px-2 py-1 rounded-full ${passwordValidations.number ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'}`}>
+        {passwordValidations.number ? '✓' : '✗'} Number
+      </span>
+      <span className={`text-xs px-2 py-1 rounded-full ${passwordValidations.specialChar ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'}`}>
+        {passwordValidations.specialChar ? '✓' : '✗'} Special char
+      </span>
+    </div>
+  );
 
   return (
     <div className="relative min-h-screen bg-gray-50 dark:bg-gray-800 sm:dark:bg-gray-900 transition-colors duration-200">
@@ -268,10 +271,12 @@ export default function SignUpPage() {
                     <input
                       id="password"
                       name="password"
-                      type={showPasswords.password ? 'text' : 'password'}
+                      type={showPassword ? 'text' : 'password'}
                       autoComplete="new-password"
                       value={formData.password}
                       onChange={handleChange}
+                      onFocus={() => setPasswordFocused(true)}
+                      onBlur={() => setPasswordFocused(false)}
                       className={`block w-full pl-10 pr-10 py-2 rounded-lg border ${
                         errors.password
                           ? 'border-red-500'
@@ -281,10 +286,10 @@ export default function SignUpPage() {
                     />
                     <button
                       type="button"
-                      onClick={() => togglePasswordVisibility('password')}
+                      onClick={() => setShowPassword(!showPassword)}
                       className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                     >
-                      {showPasswords.password ? (
+                      {showPassword ? (
                         <FaEyeSlash className="h-5 w-5" />
                       ) : (
                         <FaEye className="h-5 w-5" />
@@ -292,87 +297,12 @@ export default function SignUpPage() {
                     </button>
                   </div>
                 </fieldset>
+                <PasswordValidationTags />
                 {errors.password && (
                   <p className="mt-1 text-sm text-red-600 dark:text-red-400">
                     {errors.password}
                   </p>
                 )}
-              </div>
-
-              {/* Confirm Password Field */}
-              <div>
-                <label
-                  htmlFor="confirmPassword"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                >
-                  Confirm Password
-                </label>
-                <fieldset className="relative">
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <FaLock className="h-5 w-5 text-gray-400" />
-                    </div>
-                    <input
-                      id="confirmPassword"
-                      name="confirmPassword"
-                      type={showPasswords.confirmPassword ? 'text' : 'password'}
-                      autoComplete="new-password"
-                      value={formData.confirmPassword}
-                      onChange={handleChange}
-                      className={`block w-full pl-10 pr-10 py-2 rounded-lg border ${
-                        errors.confirmPassword
-                          ? 'border-red-500'
-                          : 'border-gray-300 dark:border-gray-600'
-                      } bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent`}
-                      placeholder="••••••••"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => togglePasswordVisibility('confirmPassword')}
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                    >
-                      {showPasswords.confirmPassword ? (
-                        <FaEyeSlash className="h-5 w-5" />
-                      ) : (
-                        <FaEye className="h-5 w-5" />
-                      )}
-                    </button>
-                  </div>
-                </fieldset>
-                {errors.confirmPassword && (
-                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-                    {errors.confirmPassword}
-                  </p>
-                )}
-              </div>
-
-              {/* Password Requirements */}
-              <div className="p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                <p className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">
-                  Password requirements:
-                </p>
-                <ul className="text-xs text-gray-600 dark:text-gray-400 space-y-1">
-                  <li className={`flex items-center ${passwordValidations.length ? 'text-green-600 dark:text-green-400' : ''}`}>
-                    <span className={`inline-block w-2 h-2 rounded-full mr-2 ${passwordValidations.length ? 'bg-green-500' : 'bg-gray-400'}`}></span>
-                    At least 8 characters
-                  </li>
-                  <li className={`flex items-center ${passwordValidations.uppercase ? 'text-green-600 dark:text-green-400' : ''}`}>
-                    <span className={`inline-block w-2 h-2 rounded-full mr-2 ${passwordValidations.uppercase ? 'bg-green-500' : 'bg-gray-400'}`}></span>
-                    One uppercase letter
-                  </li>
-                  <li className={`flex items-center ${passwordValidations.lowercase ? 'text-green-600 dark:text-green-400' : ''}`}>
-                    <span className={`inline-block w-2 h-2 rounded-full mr-2 ${passwordValidations.lowercase ? 'bg-green-500' : 'bg-gray-400'}`}></span>
-                    One lowercase letter
-                  </li>
-                  <li className={`flex items-center ${passwordValidations.number ? 'text-green-600 dark:text-green-400' : ''}`}>
-                    <span className={`inline-block w-2 h-2 rounded-full mr-2 ${passwordValidations.number ? 'bg-green-500' : 'bg-gray-400'}`}></span>
-                    One number
-                  </li>
-                  <li className={`flex items-center ${passwordValidations.specialChar ? 'text-green-600 dark:text-green-400' : ''}`}>
-                    <span className={`inline-block w-2 h-2 rounded-full mr-2 ${passwordValidations.specialChar ? 'bg-green-500' : 'bg-gray-400'}`}></span>
-                    One special character
-                  </li>
-                </ul>
               </div>
 
               {/* Terms & Conditions */}
