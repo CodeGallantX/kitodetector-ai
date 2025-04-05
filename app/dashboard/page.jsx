@@ -10,7 +10,7 @@ export default function Dashboard() {
     // Check if user is logged in
     const userData = localStorage.getItem('user');
     if (!userData) {
-      router.push('/auth/login');
+      router.push('/dashboard');
     } else {
       setUser(JSON.parse(userData));
     }
