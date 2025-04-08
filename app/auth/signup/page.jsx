@@ -109,21 +109,18 @@ export default function SignUpPage() {
 
     if (validateForm()) {
       try {
-        const response = await axios.post('http://localhost:8000/api/auth/signup', {
+        const response = await axios.post('http://localhost:8000/api/auth/signup/', {
           username: formData.username,
           email: formData.email,
           password: formData.password
         });
 
-        if (response.data.success) {
-          toast.success('Account created successfully!');
-          // Store user data and token if needed
-          localStorage.setItem('user', JSON.stringify(response.data.user));
-          localStorage.setItem('token', response.data.token);
+        if (response.status === 201) {
+          toast.success('Account created successfully! Please log in.');
           
-          // Redirect to dashboard after delay
+          // Redirect to login page after delay
           setTimeout(() => {
-            router.push('/dashboard');
+            router.push('/auth/login');
           }, 1500);
         } else {
           throw new Error(response.data.message || 'Signup failed');

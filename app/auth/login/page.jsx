@@ -31,6 +31,13 @@ export default function LoginPage() {
       ...prev,
       [name]: value
     }));
+    // Clear error when user types
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
   };
 
   const validateForm = () => {
@@ -40,7 +47,6 @@ export default function LoginPage() {
       password: '',
     };
 
-    // Email validation
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
       valid = false;
@@ -49,12 +55,8 @@ export default function LoginPage() {
       valid = false;
     }
 
-    // Password validation
     if (!formData.password) {
       newErrors.password = 'Password is required';
-      valid = false;
-    } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
       valid = false;
     }
 
@@ -64,53 +66,75 @@ export default function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      setIsLoading(true);
-      try {
-        const response = await axios.post('http://localhost:8000/api/auth/login', formData, {
+    if (!validateForm()) return;
+
+    setIsLoading(true);
+    try {
+      const response = await axios.post(
+        'https://kitodeck-be.onrender.com/api/auth/login/',
+        {
+          email: formData.email,
+          password: formData.password
+        },
+        {
           headers: {
             'Content-Type': 'application/json',
           },
-        });
+        }
+      );
 
-        const { data } = response;
+      const { access, refresh, user } = response.data;
 
-        // Store user data and token
-        localStorage.setItem('user', JSON.stringify(data.user));
-        localStorage.setItem('token', data.token);
+      // Store tokens and user data
+      localStorage.setItem('access_token', access);
+      localStorage.setItem('refresh_token', refresh);
+      localStorage.setItem('user', JSON.stringify(user));
 
-        toast.success('Login successful!', {
-          position: "top-center",
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: theme === 'dark' ? 'dark' : 'light',
-        });
+      toast.success('Login successful! Redirecting...', {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: theme === 'dark' ? 'dark' : 'light',
+      });
 
-        // Redirect to dashboard after successful login
-        setTimeout(() => {
-          router.push('/dashboard');
-        }, 2000);
+      setTimeout(() => {
+        router.push('/dashboard');
+      }, 2000);
 
-      } catch (error) {
-        console.error('Login error:', error);
-        const errorMessage = error.response?.data?.message || 'Login failed. Please try again.';
-        toast.error(errorMessage, {
-          position: "top-center",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: theme === 'dark' ? 'dark' : 'light',
-        });
-      } finally {
-        setIsLoading(false);
+    } catch (error) {
+      console.error('Login error:', error);
+      
+      let errorMessage = 'Login failed. Please try again.';
+      
+      if (error.response) {
+        // Handle 401 Unauthorized specifically
+        if (error.response.status === 401) {
+          errorMessage = error.response.data?.error || 'Invalid email or password';
+          if (error.response.data?.details) {
+            errorMessage += `: ${error.response.data.details}`;
+          }
+        } else if (error.response.status === 400) {
+          errorMessage = error.response.data?.error || 'Invalid request data';
+        }
       }
+
+      toast.error(errorMessage, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: theme === 'dark' ? 'dark' : 'light',
+      });
+
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -126,7 +150,6 @@ export default function LoginPage() {
 
   return (
     <div className={`relative min-h-screen ${containerBg} flex flex-col justify-center py-12 sm:px-6 lg:px-8 transition-colors duration-300`}>
-      {/* Toast Container */}
       <ToastContainer
         position="top-center"
         autoClose={3000}
@@ -162,7 +185,10 @@ export default function LoginPage() {
               <label htmlFor="email" className={`block text-sm font-medium ${secondaryTextColor}`}>
                 Email address
               </label>
-              <fieldset className="mt-1 relative rounded-md shadow-sm">
+              <div className="mt-1 relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FaEnvelope className={`h-5 w-5 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} />
+                </div>
                 <input
                   id="email"
                   name="email"
@@ -170,9 +196,10 @@ export default function LoginPage() {
                   autoComplete="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`block w-full px-3 py-2 ${inputBg} border ${errors.email ? 'border-red-300' : borderColor} rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 sm:text-sm`}
+                  className={`block w-full pl-10 pr-3 py-2 ${inputBg} border ${errors.email ? 'border-red-500' : borderColor} rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 sm:text-sm`}
+                  placeholder="you@example.com"
                 />
-              </fieldset>
+              </div>
               {errors.email && <p className="mt-2 text-sm text-red-600">{errors.email}</p>}
             </div>
 
@@ -181,7 +208,10 @@ export default function LoginPage() {
               <label htmlFor="password" className={`block text-sm font-medium ${secondaryTextColor}`}>
                 Password
               </label>
-              <fieldset className="mt-1 relative rounded-md shadow-sm">
+              <div className="mt-1 relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FaLock className={`h-5 w-5 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} />
+                </div>
                 <input
                   id="password"
                   name="password"
@@ -189,7 +219,8 @@ export default function LoginPage() {
                   autoComplete="current-password"
                   value={formData.password}
                   onChange={handleChange}
-                  className={`block w-full px-3 py-2 ${inputBg} border ${errors.password ? 'border-red-300' : borderColor} rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 sm:text-sm`}
+                  className={`block w-full pl-10 pr-10 py-2 ${inputBg} border ${errors.password ? 'border-red-500' : borderColor} rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 sm:text-sm`}
+                  placeholder="••••••••"
                 />
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
                   <button
@@ -204,7 +235,7 @@ export default function LoginPage() {
                     )}
                   </button>
                 </div>
-              </fieldset>
+              </div>
               {errors.password && <p className="mt-2 text-sm text-red-600">{errors.password}</p>}
             </div>
 
@@ -238,7 +269,7 @@ export default function LoginPage() {
               >
                 {isLoading ? (
                   <>
-                    <span className="h-3 w-3 p-2 border-b-2 border-b-white animate-spin rounded-full mr-2"></span>
+                    <span className="h-4 w-4 border-2 border-white border-t-transparent animate-spin rounded-full mr-2"></span>
                     Signing in...
                   </>
                 ) : 'Sign in'}
