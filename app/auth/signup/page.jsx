@@ -127,7 +127,33 @@ export default function SignUpPage() {
         }
       } catch (error) {
         console.error('Signup error:', error);
-        toast.error(error.response?.data?.message || error.message || 'Error creating account');
+        
+        // Handle different error cases
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          if (error.response.status === 400) {
+            // Handle validation errors from the server
+            if (error.response.data.username) {
+              setErrors(prev => ({...prev, username: error.response.data.username[0]}));
+            }
+            if (error.response.data.email) {
+              setErrors(prev => ({...prev, email: error.response.data.email[0]}));
+            }
+            if (error.response.data.password) {
+              setErrors(prev => ({...prev, password: error.response.data.password[0]}));
+            }
+            toast.error('Please fix the errors in the form');
+          } else if (error.response.status === 409) {
+            // Handle conflict 
+            toast.error(error.response.data.detail || 'User with this email or username already exists');
+          } else {
+            toast.error(error.response.data.detail || 'An error occurred during signup');
+          }
+        } else if (error.request) {
+          toast.error('No response from server. Please try again later.');
+        } else {
+          toast.error('Error setting up request. Please try again.');
+        }
       } finally {
         setIsSubmitting(false);
       }
