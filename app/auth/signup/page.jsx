@@ -109,7 +109,7 @@ export default function SignUpPage() {
 
     if (validateForm()) {
       try {
-        const response = await axios.post('http://kitodeck.onrender.com/api/auth/signup/', {
+        const response = await axios.post('https://kitodeck-be-5cal.onrender.com/api/auth/signup/', {
           username: formData.username,
           email: formData.email,
           password: formData.password

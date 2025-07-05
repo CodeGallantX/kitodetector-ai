@@ -71,7 +71,7 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        'https://kitodeck.onrender.com/api/auth/login/',
+        'https://kitodeck-be-5cal.onrender.com/api/auth/login/',
         {
           email: formData.email,
           password: formData.password
