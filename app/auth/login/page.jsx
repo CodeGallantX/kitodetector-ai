@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useState } from 'react';
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaChevronLeft } from 'react-icons/fa6';
@@ -8,32 +8,6 @@ import { useTheme } from 'next-themes';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
-
-// API configuration
-const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://kitodeck-be.onrender.com/api',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-// Login function
-const login = async (credentials) => {
-  try {
-    console.log('Attempting login with credentials:', { ...credentials, password: '***' });
-    const response = await api.post('/auth/login/', credentials);
-    console.log('Login response:', response.data);
-    
-    if (response.data.token) {
-      localStorage.setItem('token', response.data.token);
-      api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-    }
-    return response;
-  } catch (error) {
-    console.error('Login error:', error);
-    throw error;
-  }
-};
 
 export default function LoginPage() {
   const { theme } = useTheme();
@@ -50,7 +24,6 @@ export default function LoginPage() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -94,49 +67,79 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-    
-    setError('');
-    setIsLoading(true);
 
+    setIsLoading(true);
     try {
-      const response = await login(formData);
-      if (response.data.token) {
-        toast.success('Login successful!');
+      const response = await axios.post(
+        'https://kitodeck-be-5cal.onrender.com/api/auth/login/',
+        {
+          email: formData.email,
+          password: formData.password
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      const { access, refresh, user } = response.data;
+
+      // Store tokens and user data
+      localStorage.setItem('access_token', access);
+      localStorage.setItem('refresh_token', refresh);
+      localStorage.setItem('user', JSON.stringify(user));
+
+      toast.success('Login successful! Redirecting...', {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: theme === 'dark' ? 'dark' : 'light',
+      });
+
+      setTimeout(() => {
         router.push('/dashboard');
-        router.refresh();
-      } else {
-        throw new Error('No token received from server');
-      }
+      }, 2000);
+
     } catch (error) {
-      console.error('Login error details:', error);
+      console.error('Login error:', error);
       
-      let errorMessage = 'An error occurred during login';
+      let errorMessage = 'Login failed. Please try again.';
       
       if (error.response) {
-        const status = error.response.status;
-        const data = error.response.data;
-        
-        if (status === 400) {
-          errorMessage = data.message || 'Invalid email or password';
-        } else if (status === 401) {
-          errorMessage = 'Unauthorized access';
-        } else if (status === 403) {
-          errorMessage = 'Access forbidden';
-        } else if (status === 404) {
-          errorMessage = 'Resource not found';
-        } else if (status === 500) {
-          errorMessage = 'Server error. Please try again later';
-        } else {
-          errorMessage = data.message || `Error: ${status}`;
+        // Handle 401 Unauthorized specifically
+        if (error.response.status === 401) {
+          errorMessage = error.response.data?.detail || 'Invalid email or password';
+        } else if (error.response.status === 400) {
+          if (error.response.data.email) {
+            setErrors(prev => ({...prev, email: error.response.data.email[0]}));
+          }
+          if (error.response.data.password) {
+            setErrors(prev => ({...prev, password: error.response.data.password[0]}));
+          }
+          errorMessage = 'Please fix the errors in the form';
+        } else if (error.response.status === 500) {
+          errorMessage = 'Server error. Please try again later.';
         }
       } else if (error.request) {
-        errorMessage = 'No response from server. Please check your internet connection';
-      } else {
-        errorMessage = error.message || 'An unexpected error occurred';
+        errorMessage = 'No response from server. Please check your connection.';
       }
-      
-      setError(errorMessage);
-      toast.error(errorMessage);
+
+      toast.error(errorMessage, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: theme === 'dark' ? 'dark' : 'light',
+      });
+
     } finally {
       setIsLoading(false);
     }
@@ -168,7 +171,7 @@ export default function LoginPage() {
       />
       
       <button 
-        className={`absolute top-8 left-6 p-2 rounded-lg border ${theme === 'dark' ? 'border-gray-600 hover:border-teal-500' : 'border-gray-300 hover:border-teal-600'} hover:bg-teal-600 transition-colors duration-300 ease-in-out ${textColor}`}
+        className={`absolute top-8 left-6 p-2 rounded-lg border ${theme === 'dark' ? 'border-gray-600 hover:border-teal-500' : 'border-gray-300 hover:border-teal-600'} hover:bg-teal-600 hover:text-white transition-colors duration-300 ease-in-out ${textColor}`}
         onClick={() => router.back()}
       >
         <FaChevronLeft className="inline-block"/> 
@@ -183,13 +186,6 @@ export default function LoginPage() {
 
       <div className="mt-8 px-6 sm:mx-auto sm:w-full sm:max-w-md md:max-w-lg">
         <div className={`${cardBg} py-8 px-4 shadow sm:rounded-2xl sm:px-10 transition-colors duration-300 ${theme === 'dark' ? 'shadow-lg' : 'shadow-sm'}`}>
-          {isLoading && (
-            <div className="mb-4 p-4 bg-teal-100 border border-teal-400 text-teal-700 rounded">
-              <span className="h-4 w-4 border-2 border-teal-400 border-t-transparent animate-spin rounded-full mr-2"></span>
-              Signing in...
-            </div>
-          )}
-          
           <form className="space-y-6" onSubmit={handleSubmit}>
             {/* Email Field */}
             <div>
@@ -207,11 +203,11 @@ export default function LoginPage() {
                   autoComplete="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`block w-full pl-10 pr-3 py-2 ${inputBg} border ${errors.email ? 'border-red-500' : borderColor} rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 sm:text-sm`}
+                  className={`block w-full pl-10 pr-3 py-2 ${inputBg} border ${errors.email ? 'border-red-500' : borderColor} rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent sm:text-sm`}
                   placeholder="you@example.com"
                 />
               </div>
-              {errors.email && <p className="mt-2 text-sm text-red-600">{errors.email}</p>}
+              {errors.email && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.email}</p>}
             </div>
 
             {/* Password Field */}
@@ -230,7 +226,7 @@ export default function LoginPage() {
                   autoComplete="current-password"
                   value={formData.password}
                   onChange={handleChange}
-                  className={`block w-full pl-10 pr-10 py-2 ${inputBg} border ${errors.password ? 'border-red-500' : borderColor} rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 sm:text-sm`}
+                  className={`block w-full pl-10 pr-10 py-2 ${inputBg} border ${errors.password ? 'border-red-500' : borderColor} rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent sm:text-sm`}
                   placeholder="••••••••"
                 />
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -247,7 +243,7 @@ export default function LoginPage() {
                   </button>
                 </div>
               </div>
-              {errors.password && <p className="mt-2 text-sm text-red-600">{errors.password}</p>}
+              {errors.password && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.password}</p>}
             </div>
 
             {/* Remember me and Forgot password */}
@@ -259,13 +255,13 @@ export default function LoginPage() {
                   type="checkbox"
                   className={`h-4 w-4 text-teal-600 focus:ring-teal-500 ${borderColor} rounded`}
                 />
-                <label htmlFor="remember-me" className={`ml-2 block text-sm ${textColor}`}>
+                <label htmlFor="remember-me" className={`ml-2 block text-sm ${secondaryTextColor}`}>
                   Remember me
                 </label>
               </div>
 
               <div className="text-sm">
-                <Link href="/forgot-password" className="font-medium text-teal-500 hover:text-teal-400">
+                <Link href="/auth/forgot-password" className="font-medium text-teal-500 hover:text-teal-400">
                   Forgot your password?
                 </Link>
               </div>
@@ -276,11 +272,14 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-teal-500 hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
+                className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-colors duration-200 ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
               >
                 {isLoading ? (
                   <>
-                    <span className="h-4 w-4 border-2 border-white border-t-transparent animate-spin rounded-full mr-2"></span>
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
                     Signing in...
                   </>
                 ) : 'Sign in'}
