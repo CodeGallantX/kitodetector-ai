@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState } from 'react';
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaChevronLeft } from 'react-icons/fa6';
@@ -8,6 +8,32 @@ import { useTheme } from 'next-themes';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
+
+// API configuration
+const api = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://kitodeck-be.onrender.com/api',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Login function
+const login = async (credentials) => {
+  try {
+    console.log('Attempting login with credentials:', { ...credentials, password: '***' });
+    const response = await api.post('/auth/login/', credentials);
+    console.log('Login response:', response.data);
+    
+    if (response.data.token) {
+      localStorage.setItem('token', response.data.token);
+      api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+    }
+    return response;
+  } catch (error) {
+    console.error('Login error:', error);
+    throw error;
+  }
+};
 
 export default function LoginPage() {
   const { theme } = useTheme();
@@ -24,6 +50,7 @@ export default function LoginPage() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -67,72 +94,49 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-
+    
+    setError('');
     setIsLoading(true);
+
     try {
-      const response = await axios.post(
-        'https://kitodeck-be.onrender.com/api/auth/login/',
-        {
-          email: formData.email,
-          password: formData.password
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      const { access, refresh, user } = response.data;
-
-      // Store tokens and user data
-      localStorage.setItem('access_token', access);
-      localStorage.setItem('refresh_token', refresh);
-      localStorage.setItem('user', JSON.stringify(user));
-
-      toast.success('Login successful! Redirecting...', {
-        position: "top-center",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: theme === 'dark' ? 'dark' : 'light',
-      });
-
-      setTimeout(() => {
+      const response = await login(formData);
+      if (response.data.token) {
+        toast.success('Login successful!');
         router.push('/dashboard');
-      }, 2000);
-
+        router.refresh();
+      } else {
+        throw new Error('No token received from server');
+      }
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('Login error details:', error);
       
-      let errorMessage = 'Login failed. Please try again.';
+      let errorMessage = 'An error occurred during login';
       
       if (error.response) {
-        // Handle 401 Unauthorized specifically
-        if (error.response.status === 401) {
-          errorMessage = error.response.data?.error || 'Invalid email or password';
-          if (error.response.data?.details) {
-            errorMessage += `: ${error.response.data.details}`;
-          }
-        } else if (error.response.status === 400) {
-          errorMessage = error.response.data?.error || 'Invalid request data';
+        const status = error.response.status;
+        const data = error.response.data;
+        
+        if (status === 400) {
+          errorMessage = data.message || 'Invalid email or password';
+        } else if (status === 401) {
+          errorMessage = 'Unauthorized access';
+        } else if (status === 403) {
+          errorMessage = 'Access forbidden';
+        } else if (status === 404) {
+          errorMessage = 'Resource not found';
+        } else if (status === 500) {
+          errorMessage = 'Server error. Please try again later';
+        } else {
+          errorMessage = data.message || `Error: ${status}`;
         }
+      } else if (error.request) {
+        errorMessage = 'No response from server. Please check your internet connection';
+      } else {
+        errorMessage = error.message || 'An unexpected error occurred';
       }
-
-      toast.error(errorMessage, {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: theme === 'dark' ? 'dark' : 'light',
-      });
-
+      
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -179,6 +183,13 @@ export default function LoginPage() {
 
       <div className="mt-8 px-6 sm:mx-auto sm:w-full sm:max-w-md md:max-w-lg">
         <div className={`${cardBg} py-8 px-4 shadow sm:rounded-2xl sm:px-10 transition-colors duration-300 ${theme === 'dark' ? 'shadow-lg' : 'shadow-sm'}`}>
+          {isLoading && (
+            <div className="mb-4 p-4 bg-teal-100 border border-teal-400 text-teal-700 rounded">
+              <span className="h-4 w-4 border-2 border-teal-400 border-t-transparent animate-spin rounded-full mr-2"></span>
+              Signing in...
+            </div>
+          )}
+          
           <form className="space-y-6" onSubmit={handleSubmit}>
             {/* Email Field */}
             <div>

@@ -1,172 +1,119 @@
 "use client";
 import { useState } from "react";
-import { FaChevronDown } from "react-icons/fa6";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
-import { useTheme } from "next-themes"; // For theme management
+import { useTheme } from "next-themes";
 
-// FAQ data array - contains all questions and answers
+// Updated FAQ data array
 const faqs = [
-  { question: "What is KitoDeck AI?", answer: "KitoDeck AI helps you identify and avoid Kito predators using AI-powered analysis." },
-  { question: "How does the image scan work?", answer: "You upload an image and our system compares it with known Kito suspects." },
-  { question: "What is included in the free plan?", answer: "The free plan includes limited scans with no 24/7 support." },
-  { question: "How accurate is KitoDeck AI?", answer: "Our AI has a high accuracy rate based on verified reports and data analysis." },
-  { question: "Can I report a suspected predator?", answer: "Yes, you can report suspects through our platform for review." },
-  { question: "Is my data secure?", answer: "Yes, we use encryption and follow strict security protocols to protect user data." },
-  { question: "Do you support multiple languages?", answer: "Currently, we support English, but more languages will be added soon." },
-  { question: "How can I get premium support?", answer: "Premium users get 24/7 priority support and faster scan results." },
-  { question: "Can I use KitoDeck AI on my phone?", answer: "Yes, our platform is mobile-friendly and works on all devices." },
-  { question: "What happens if an image scan fails?", answer: "If a scan fails, try uploading a clearer image or contact support." },
-  { question: "Are there any legal concerns with using KitoDeck AI?", answer: "Our platform follows all legal regulations and data protection laws." },
-  { question: "Can businesses use KitoDeck AI?", answer: "Yes, we offer enterprise solutions for businesses looking to integrate our AI." },
-  { question: "How often is your database updated?", answer: "Our database is updated regularly with verified reports and AI improvements." }
+  { 
+    question: "What is KitoDeck AI?", 
+    answer: "KitoDeck AI helps you identify and avoid kito predators using AI-powered analysis. Our platform uses advanced machine learning to detect potential threats and protect users from online predators." 
+  },
+  { 
+    question: "How does the image scan work?", 
+    answer: "You upload an image, and our system compares it with known kito suspects using facial recognition and pattern matching. The AI analyzes various features to determine potential matches and provides a detailed report." 
+  },
+  { 
+    question: "What is included in the free plan?", 
+    answer: "The free plan includes limited scans (10 per month), basic chat transcript analysis, access to our knowledge base, and community support. It's a great way to try out our service." 
+  },
+  { 
+    question: "How accurate is the AI detection?", 
+    answer: "Our AI has been trained on extensive datasets and has an accuracy rate of over 95%. However, we always recommend using it as a tool alongside your own judgment." 
+  },
+  { 
+    question: "Can I use KitoDeck AI on mobile devices?", 
+    answer: "Yes, our platform is fully responsive and works on all devices including smartphones and tablets. You can access all features through our mobile-friendly interface." 
+  },
+  { 
+    question: "What happens to my uploaded images?", 
+    answer: "Your privacy is our priority. Images are processed securely and deleted immediately after analysis. We never store or share your data with third parties." 
+  },
+  { 
+    question: "How do I report a suspected predator?", 
+    answer: "You can use our reporting feature to submit details about suspicious individuals. Our team reviews all reports and takes appropriate action while maintaining confidentiality." 
+  },
+  { 
+    question: "What payment methods do you accept?", 
+    answer: "We accept all major credit cards, PayPal, and various other payment methods. All transactions are secure and encrypted." 
+  },
+  { 
+    question: "Can I cancel my subscription anytime?", 
+    answer: "Yes, you can cancel your subscription at any time. You'll continue to have access to premium features until the end of your billing period." 
+  },
+  { 
+    question: "Do you offer refunds?", 
+    answer: "We offer a 14-day money-back guarantee for all paid plans. If you're not satisfied with our service, you can request a full refund within this period." 
+  }
 ];
 
-// Animation variants for consistent motion effects
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1, // Stagger animation for each FAQ item
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { y: 20, opacity: 0 },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      duration: 0.5,
-      ease: "easeOut",
-    },
-  },
-};
-
-const answerVariants = {
-  open: { 
-    opacity: 1,
-    height: "auto",
-    transition: { duration: 0.3, ease: "easeInOut" }
-  },
-  closed: { 
-    opacity: 0,
-    height: 0,
-    transition: { duration: 0.3, ease: "easeInOut" }
-  }
-};
-
 const FAQ = () => {
-  const [activeIndex, setActiveIndex] = useState(null);
-  const { theme } = useTheme(); // Access current theme
+  const [openIndex, setOpenIndex] = useState(null);
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
 
-  // Toggle FAQ item expansion
-  const toggleFaq = (index) => {
-    setActiveIndex(activeIndex === index ? null : index);
+  const toggleFAQ = (index) => {
+    setOpenIndex(openIndex === index ? null : index);
   };
-
-  // Theme-based styling
-  const getThemeClasses = () => {
-    const isDark = theme === "dark";
-    return {
-      sectionBg: isDark ? "bg-gray-900" : "bg-gray-50",
-      textColor: isDark ? "text-white" : "text-gray-800",
-      questionButton: isDark 
-        ? "bg-gray-800 hover:bg-gray-700 text-white" 
-        : "bg-white hover:bg-gray-100 text-gray-900",
-      activeQuestion: isDark 
-        ? "bg-teal-600 text-white" 
-        : "bg-teal-500 text-white",
-      answerBg: isDark 
-        ? "bg-gray-800 text-gray-300" 
-        : "bg-white text-gray-700",
-      chevronColor: isDark 
-        ? "text-white" 
-        : "text-teal-600",
-      borderColor: isDark 
-        ? "border-gray-700" 
-        : "border-gray-200"
-    };
-  };
-
-  const themeClasses = getThemeClasses();
 
   return (
-    <motion.section
-      id="faq"
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.5 }}
-      className={`py-14 px-6 md:px-8 lg:px-16 xl:px-24 ${themeClasses.sectionBg}`}
-    >
-      {/* Animated title with scroll trigger */}
-      <motion.h2
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
-        className={`text-4xl font-bold mb-10 text-center ${themeClasses.textColor}`}
-      >
-        Frequently Asked Questions
-      </motion.h2>
+    <section className="py-20 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold sm:text-4xl mb-4">Frequently Asked Questions</h2>
+          <p className={`text-lg ${isDark ? "text-gray-300" : "text-gray-600"}`}>
+            Find answers to common questions about KitoDeck AI
+          </p>
+        </div>
 
-      {/* FAQ grid with staggered animations */}
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-50px" }}
-        className="grid grid-cols-1 md:grid-cols-2 items-start justify-center gap-4"
-      >
-        {faqs.map((faq, index) => (
-          <motion.div
-            key={index}
-            variants={itemVariants}
-            className="w-full overflow-hidden rounded-xl shadow-md"
-          >
-            {/* Question Button with hover effects */}
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => toggleFaq(index)}
-              className={`w-full text-left py-4 px-6 flex justify-between items-center rounded-xl font-medium transition-all duration-300 border ${themeClasses.borderColor} ${
-                activeIndex === index 
-                  ? themeClasses.activeQuestion 
-                  : themeClasses.questionButton
+        <div className="space-y-4">
+          {faqs.map((faq, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className={`rounded-xl overflow-hidden ${
+                isDark
+                  ? "bg-gray-800/50 backdrop-blur-lg border border-gray-700"
+                  : "bg-white/50 backdrop-blur-lg border border-gray-200"
               }`}
             >
-              <span className="text-left">{faq.question}</span>
-              <FaChevronDown
-                className={`transition-transform duration-300 ${
-                  activeIndex === index 
-                    ? "rotate-180" 
-                    : ""
-                } ${themeClasses.chevronColor}`}
-              />
-            </motion.button>
+              <button
+                onClick={() => toggleFAQ(index)}
+                className={`w-full px-6 py-4 text-left flex justify-between items-center ${
+                  isDark ? "text-white" : "text-gray-900"
+                }`}
+              >
+                <span className="font-medium">{faq.question}</span>
+                {openIndex === index ? (
+                  <FaChevronUp className="w-5 h-5" />
+                ) : (
+                  <FaChevronDown className="w-5 h-5" />
+                )}
+              </button>
 
-            {/* Animated answer section */}
-            <AnimatePresence>
-              {activeIndex === index && (
-                <motion.div
-                  initial="closed"
-                  animate="open"
-                  exit="closed"
-                  variants={answerVariants}
-                  className={`${themeClasses.answerBg} rounded-b-xl border ${themeClasses.borderColor} border-t-0`}
-                >
-                  <div className="p-6">
-                    <p>{faq.answer}</p>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
-        ))}
-      </motion.div>
-    </motion.section>
+              <AnimatePresence>
+                {openIndex === index && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className={`px-6 pb-4 ${
+                      isDark ? "text-gray-300" : "text-gray-600"
+                    }`}
+                  >
+                    {faq.answer}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 };
 

@@ -37,7 +37,7 @@ export default function RootLayout({ children }) {
         <meta name="robots" content="index, follow" />
       </head>
       <body className="font-dmSans antialiased">
-        <ThemeProvider attribute="class" defaultTheme="system" value={{ light: "light", dark: "dark" }}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem={true} disableTransitionOnChange>
           {children}
         </ThemeProvider>
         </body>

@@ -1,63 +1,69 @@
-'use client';
+"use client";
 
 import { useState } from 'react';
 import { FaUser, FaEnvelope, FaLock, FaEye, FaEyeSlash, FaChevronLeft } from 'react-icons/fa6';
 import Link from 'next/link';
+import { useRouter } from "next/navigation";
 import { useTheme } from 'next-themes';
-import toast from 'react-hot-toast';
-import { useRouter } from 'next/navigation';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 
-export default function SignUpPage() {
+// API configuration
+const api = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://kitodeck-be.onrender.com/api',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Signup function
+const signup = async (userData) => {
+  try {
+    console.log('Attempting signup with data:', { ...userData, password: '***' });
+    const response = await api.post('/auth/signup/', userData);
+    console.log('Signup response:', response.data);
+    return response;
+  } catch (error) {
+    console.error('Signup error:', error);
+    throw error;
+  }
+};
+
+export default function SignupPage() {
   const { theme } = useTheme();
   const router = useRouter();
-
   const [formData, setFormData] = useState({
     username: '',
     email: '',
     password: '',
+    confirmPassword: '',
   });
 
   const [errors, setErrors] = useState({
     username: '',
     email: '',
     password: '',
+    confirmPassword: '',
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  const [passwordFocused, setPasswordFocused] = useState(false);
-  const [passwordValidations, setPasswordValidations] = useState({
-    length: false,
-    uppercase: false,
-    lowercase: false,
-    number: false,
-    specialChar: false,
-  });
-
-  const [acceptedTerms, setAcceptedTerms] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const validatePassword = (password) => {
-    const validations = {
-      length: password.length >= 8,
-      uppercase: /[A-Z]/.test(password),
-      lowercase: /[a-z]/.test(password),
-      number: /[0-9]/.test(password),
-      specialChar: /[!@#$%^&*(),.?":{}|<>]/.test(password),
-    };
-    setPasswordValidations(validations);
-    return Object.values(validations).every(Boolean);
-  };
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
-      [name]: value,
+      [name]: value
     }));
-
-    if (name === 'password') {
-      validatePassword(value);
+    // Clear error when user types
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
     }
   };
 
@@ -67,13 +73,11 @@ export default function SignUpPage() {
       username: '',
       email: '',
       password: '',
+      confirmPassword: '',
     };
 
     if (!formData.username.trim()) {
       newErrors.username = 'Username is required';
-      valid = false;
-    } else if (formData.username.length < 3) {
-      newErrors.username = 'Username must be at least 3 characters';
       valid = false;
     }
 
@@ -88,13 +92,16 @@ export default function SignUpPage() {
     if (!formData.password) {
       newErrors.password = 'Password is required';
       valid = false;
-    } else if (!validatePassword(formData.password)) {
-      newErrors.password = 'Password does not meet all requirements';
+    } else if (formData.password.length < 8) {
+      newErrors.password = 'Password must be at least 8 characters long';
       valid = false;
     }
 
-    if (!acceptedTerms) {
-      toast.error('You must accept the terms & conditions');
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = 'Please confirm your password';
+      valid = false;
+    } else if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = 'Passwords do not match';
       valid = false;
     }
 
@@ -104,58 +111,52 @@ export default function SignUpPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isSubmitting) return;
-    setIsSubmitting(true);
+    if (!validateForm()) return;
+    
+    setError('');
+    setIsLoading(true);
 
-    if (validateForm()) {
-      try {
-        const response = await axios.post('http://localhost:8000/api/auth/signup/', {
-          username: formData.username,
-          email: formData.email,
-          password: formData.password
-        });
+    try {
+      const response = await signup({
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+      });
 
-        if (response.status === 201) {
-          toast.success('Account created successfully! Please log in.');
-          
-          // Redirect to login page after delay
-          setTimeout(() => {
-            router.push('/auth/login');
-          }, 1500);
-        } else {
-          throw new Error(response.data.message || 'Signup failed');
-        }
-      } catch (error) {
-        console.error('Signup error:', error);
-        toast.error(error.response?.data?.message || error.message || 'Error creating account');
-      } finally {
-        setIsSubmitting(false);
+      if (response.data.message) {
+        toast.success('Account created successfully! Please login.');
+        router.push('/auth/login');
       }
-    } else {
-      setIsSubmitting(false);
+    } catch (error) {
+      console.error('Signup error details:', error);
+      
+      let errorMessage = 'An error occurred during signup';
+      
+      if (error.response) {
+        const status = error.response.status;
+        const data = error.response.data;
+        
+        if (status === 400) {
+          errorMessage = data.message || 'Invalid input data';
+        } else if (status === 409) {
+          errorMessage = 'Email or username already exists';
+        } else if (status === 500) {
+          errorMessage = 'Server error. Please try again later';
+        } else {
+          errorMessage = data.message || `Error: ${status}`;
+        }
+      } else if (error.request) {
+        errorMessage = 'No response from server. Please check your internet connection';
+      } else {
+        errorMessage = error.message || 'An unexpected error occurred';
+      }
+      
+      setError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
   };
-
-  // Password validation tags component
-  const PasswordValidationTags = () => (
-    <div className={`mt-2 flex flex-wrap gap-2 transition-opacity duration-200 ${passwordFocused ? 'opacity-100' : 'opacity-0'}`}>
-      <span className={`text-xs px-2 py-1 rounded-full ${passwordValidations.length ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'}`}>
-        {passwordValidations.length ? '✓' : '✗'} 8+ chars
-      </span>
-      <span className={`text-xs px-2 py-1 rounded-full ${passwordValidations.uppercase ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'}`}>
-        {passwordValidations.uppercase ? '✓' : '✗'} Uppercase
-      </span>
-      <span className={`text-xs px-2 py-1 rounded-full ${passwordValidations.lowercase ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'}`}>
-        {passwordValidations.lowercase ? '✓' : '✗'} Lowercase
-      </span>
-      <span className={`text-xs px-2 py-1 rounded-full ${passwordValidations.number ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'}`}>
-        {passwordValidations.number ? '✓' : '✗'} Number
-      </span>
-      <span className={`text-xs px-2 py-1 rounded-full ${passwordValidations.specialChar ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'}`}>
-        {passwordValidations.specialChar ? '✓' : '✗'} Special char
-      </span>
-    </div>
-  );
 
   return (
     <div className="relative min-h-screen bg-gray-50 dark:bg-gray-800 sm:dark:bg-gray-900 transition-colors duration-200">
@@ -272,8 +273,6 @@ export default function SignUpPage() {
                       autoComplete="new-password"
                       value={formData.password}
                       onChange={handleChange}
-                      onFocus={() => setPasswordFocused(true)}
-                      onBlur={() => setPasswordFocused(false)}
                       className={`block w-full pl-10 pr-10 py-2 rounded-lg border ${
                         errors.password
                           ? 'border-red-500'
@@ -294,7 +293,6 @@ export default function SignUpPage() {
                     </button>
                   </div>
                 </fieldset>
-                <PasswordValidationTags />
                 {errors.password && (
                   <p className="mt-1 text-sm text-red-600 dark:text-red-400">
                     {errors.password}
@@ -302,38 +300,62 @@ export default function SignUpPage() {
                 )}
               </div>
 
-              {/* Terms & Conditions */}
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="terms"
-                  checked={acceptedTerms}
-                  onChange={(e) => setAcceptedTerms(e.target.checked)}
-                  className="h-4 w-4 rounded border-gray-300 text-teal-500 focus:ring-teal-500"
-                />
+              {/* Confirm Password Field */}
+              <div>
                 <label
-                  htmlFor="terms"
-                  className="ml-2 block text-sm text-gray-500 dark:text-gray-300"
+                  htmlFor="confirmPassword"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                 >
-                  I agree to the{' '}
-                  <Link
-                    href="/terms"
-                    className="text-teal-400 hover:underline"
-                  >
-                    Terms & Conditions
-                  </Link>
+                  Confirm Password
                 </label>
+                <fieldset className="relative">
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <FaLock className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <input
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      autoComplete="new-password"
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                      className={`block w-full pl-10 pr-10 py-2 rounded-lg border ${
+                        errors.confirmPassword
+                          ? 'border-red-500'
+                          : 'border-gray-300 dark:border-gray-600'
+                      } bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent`}
+                      placeholder="••••••••"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                    >
+                      {showConfirmPassword ? (
+                        <FaEyeSlash className="h-5 w-5" />
+                      ) : (
+                        <FaEye className="h-5 w-5" />
+                      )}
+                    </button>
+                  </div>
+                </fieldset>
+                {errors.confirmPassword && (
+                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                    {errors.confirmPassword}
+                  </p>
+                )}
               </div>
 
               {/* Submit Button */}
               <button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isLoading}
                 className={`w-full py-3 px-4 bg-teal-600 hover:bg-teal-700 text-white font-medium rounded-lg shadow-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 ${
-                  isSubmitting ? 'opacity-70 cursor-not-allowed' : ''
+                  isLoading ? 'opacity-70 cursor-not-allowed' : ''
                 }`}
               >
-                {isSubmitting ? (
+                {isLoading ? (
                   <span className="flex items-center justify-center">
                     <svg
                       className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"

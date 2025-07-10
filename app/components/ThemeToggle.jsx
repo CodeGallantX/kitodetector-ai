@@ -1,35 +1,25 @@
 "use client";
-import { useState, useEffect } from "react";
-import { FaSun, FaMoon } from "react-icons/fa6";
+import { useTheme } from "next-themes";
+import { FaSun, FaMoon } from "react-icons/fa";
+import { useEffect, useState } from "react";
 
 const ThemeToggle = () => {
-    const [theme, setTheme] = useState("dark");
+    const { theme, setTheme } = useTheme();
+    const [mounted, setMounted] = useState(false);
 
-    // Load saved theme from localStorage
     useEffect(() => {
-        const savedTheme = localStorage.getItem("theme") || "dark";
-        setTheme(savedTheme);
-        document.documentElement.classList.add(savedTheme);
+        setMounted(true);
     }, []);
 
-    // Toggle theme
-    const toggleTheme = () => {
-        const newTheme = theme === "dark" ? "light" : "dark";
-        setTheme(newTheme);
-        localStorage.setItem("theme", newTheme);
-        
-        // Update the HTML tag to reflect theme
-        document.documentElement.classList.remove(theme);
-        document.documentElement.classList.add(newTheme);
-    };
+    if (!mounted) return null;
 
     return (
         <button 
-            onClick={toggleTheme} 
-            className="p-3 transition-all duration-300"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")} 
+            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             aria-label="Toggle Theme"
         >
-            {theme === "dark" ? <FaSun className="text-gray-900 text-xl" /> : <FaMoon className="text-teal-500 text-xl" />}
+            {theme === "dark" ? <FaSun className="text-yellow-500 text-xl" /> : <FaMoon className="text-gray-700 text-xl" />}
         </button>
     );
 };
