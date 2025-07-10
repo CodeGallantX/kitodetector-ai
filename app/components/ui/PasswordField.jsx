@@ -1,3 +1,5 @@
+import { FaLock, FaEye, FaEyeSlash } from 'react-icons/fa6';
+
 const PasswordField = ({ id, name, value, onChange, error, placeholder, show, toggle }) => {
   return (
     <div>

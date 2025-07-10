@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from 'react';
-import { FaUser, FaEnvelope, FaLock, FaEye, FaEyeSlash, FaChevronLeft } from 'react-icons/fa6';
+import { FaUser, FaEnvelope, FaChevronLeft } from 'react-icons/fa6';
 import Link from 'next/link';
-import InputField from '@/components/ui/InputField'
-import PasswordField from '@/components/ui/PasswordField'
+import InputField from '../../components/ui/InputField';
+import PasswordField from '../../components/ui/PasswordField';
 import { useRouter } from "next/navigation";
 import { useTheme } from 'next-themes';
 import { ToastContainer, toast } from 'react-toastify';
