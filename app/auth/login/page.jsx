@@ -1,51 +1,32 @@
 'use client';
 
 import { useState } from 'react';
-import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaChevronLeft } from 'react-icons/fa6';
+import { FaChevronLeft } from 'react-icons/fa6';
 import Link from 'next/link';
-import { useRouter } from "next/navigation";
+import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import axios from 'axios';
+import InputField from '../../components/ui/InputField';
+import PasswordField from '../../components/ui/PasswordField';
 
 export default function LoginPage() {
   const { theme } = useTheme();
   const router = useRouter();
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
-
-  const [errors, setErrors] = useState({
-    email: '',
-    password: '',
-  });
-
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [errors, setErrors] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    // Clear error when user types
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
-    }
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
   const validateForm = () => {
     let valid = true;
-    const newErrors = {
-      email: '',
-      password: '',
-    };
+    const newErrors = { email: '', password: '' };
 
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
@@ -70,238 +51,139 @@ export default function LoginPage() {
 
     setIsLoading(true);
     try {
-      const response = await axios.post(
-        'https://kitodeck-be-5cal.onrender.com/api/auth/login/',
-        {
-          email: formData.email,
-          password: formData.password
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', 'https://kitodeck-be-5cal.onrender.com/api/auth/login/', true);
+      xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState === 4) {
+          setIsLoading(false);
+          if (xhr.status === 200) {
+            const { access, refresh } = JSON.parse(xhr.responseText);
+            localStorage.setItem('access_token', access);
+            localStorage.setItem('refresh_token', refresh);
+
+            toast.success('Login successful! Redirecting...', {
+              position: 'top-center',
+              autoClose: 2000,
+              theme: theme === 'dark' ? 'dark' : 'light',
+            });
+
+            setTimeout(() => router.push('/dashboard'), 2000);
+          } else {
+            let message = 'Login failed. Please try again.';
+            try {
+              const response = JSON.parse(xhr.responseText);
+              if (xhr.status === 401) message = response.detail || 'Invalid email or password';
+              else if (xhr.status === 400) {
+                if (response.email) setErrors((prev) => ({ ...prev, email: response.email[0] }));
+                if (response.password) setErrors((prev) => ({ ...prev, password: response.password[0] }));
+                message = 'Please fix the errors in the form';
+              } else if (xhr.status === 500) {
+                message = 'Server error. Please try again later.';
+              }
+            } catch (_) {}
+
+            toast.error(message, {
+              position: 'top-center',
+              autoClose: 5000,
+              theme: theme === 'dark' ? 'dark' : 'light',
+            });
+          }
         }
-      );
+      };
 
-      const { access, refresh, user } = response.data;
-
-      // Store tokens and user data
-      localStorage.setItem('access_token', access);
-      localStorage.setItem('refresh_token', refresh);
-      localStorage.setItem('user', JSON.stringify(user));
-
-      toast.success('Login successful! Redirecting...', {
-        position: "top-center",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: theme === 'dark' ? 'dark' : 'light',
-      });
-
-      setTimeout(() => {
-        router.push('/dashboard');
-      }, 2000);
-
+      xhr.send(JSON.stringify({ email: formData.email, password: formData.password }));
     } catch (error) {
       console.error('Login error:', error);
-      
-      let errorMessage = 'Login failed. Please try again.';
-      
-      if (error.response) {
-        // Handle 401 Unauthorized specifically
-        if (error.response.status === 401) {
-          errorMessage = error.response.data?.detail || 'Invalid email or password';
-        } else if (error.response.status === 400) {
-          if (error.response.data.email) {
-            setErrors(prev => ({...prev, email: error.response.data.email[0]}));
-          }
-          if (error.response.data.password) {
-            setErrors(prev => ({...prev, password: error.response.data.password[0]}));
-          }
-          errorMessage = 'Please fix the errors in the form';
-        } else if (error.response.status === 500) {
-          errorMessage = 'Server error. Please try again later.';
-        }
-      } else if (error.request) {
-        errorMessage = 'No response from server. Please check your connection.';
-      }
-
-      toast.error(errorMessage, {
-        position: "top-center",
+      setIsLoading(false);
+      toast.error('An unexpected error occurred. Please try again.', {
+        position: 'top-center',
         autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
         theme: theme === 'dark' ? 'dark' : 'light',
       });
-
-    } finally {
-      setIsLoading(false);
     }
   };
 
-  // Theme-based styles
-  const containerBg = theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50';
-  const cardBg = theme === 'dark' ? 'bg-gray-800' : 'bg-white';
-  const textColor = theme === 'dark' ? 'text-white' : 'text-gray-900';
-  const secondaryTextColor = theme === 'dark' ? 'text-gray-300' : 'text-gray-700';
-  const borderColor = theme === 'dark' ? 'border-gray-700' : 'border-gray-300';
-  const inputBg = theme === 'dark' ? 'bg-gray-700 text-white' : 'bg-white text-gray-900';
-  const dividerColor = theme === 'dark' ? 'border-gray-700' : 'border-gray-300';
-  const dividerTextBg = theme === 'dark' ? 'bg-gray-800' : 'bg-white';
-
   return (
-    <div className={`relative min-h-screen ${containerBg} flex flex-col justify-center py-12 sm:px-6 lg:px-8 transition-colors duration-300`}>
-      <ToastContainer
-        position="top-center"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme={theme === 'dark' ? 'dark' : 'light'}
-      />
-      
-      <button 
-        className={`absolute top-8 left-6 p-2 rounded-lg border ${theme === 'dark' ? 'border-gray-600 hover:border-teal-500' : 'border-gray-300 hover:border-teal-600'} hover:bg-teal-600 hover:text-white transition-colors duration-300 ease-in-out ${textColor}`}
+    <div className="min-h-screen flex flex-col justify-center px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-900">
+      <ToastContainer />
+
+      <button
+        className="absolute top-8 left-6 p-2 rounded-lg border border-gray-300 dark:border-white hover:border-teal-600 hover:bg-teal-600 hover:text-white transition-colors duration-300 ease-in-out"
         onClick={() => router.back()}
       >
-        <FaChevronLeft className="inline-block"/> 
-        Back
+        <FaChevronLeft className="inline-block" /> Back
       </button>
-      
-      <div className="w-full sm:mx-auto sm:w-full sm:max-w-md px-6 sm:ox-0">
-        <h2 className={`mt-6 text-left sm:text-center text-3xl font-extrabold ${textColor}`}>
-          Welcome Back! <br />Sign in to continue
+
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
+          Welcome Back
         </h2>
+        <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+          Sign in to continue
+        </p>
       </div>
 
-      <div className="mt-8 px-6 sm:mx-auto sm:w-full sm:max-w-md md:max-w-lg">
-        <div className={`${cardBg} py-8 px-4 shadow sm:rounded-2xl sm:px-10 transition-colors duration-300 ${theme === 'dark' ? 'shadow-lg' : 'shadow-sm'}`}>
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            {/* Email Field */}
-            <div>
-              <label htmlFor="email" className={`block text-sm font-medium ${secondaryTextColor}`}>
-                Email address
-              </label>
-              <div className="mt-1 relative rounded-md shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaEnvelope className={`h-5 w-5 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} />
-                </div>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className={`block w-full pl-10 pr-3 py-2 ${inputBg} border ${errors.email ? 'border-red-500' : borderColor} rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent sm:text-sm`}
-                  placeholder="you@example.com"
-                />
-              </div>
-              {errors.email && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.email}</p>}
-            </div>
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-white dark:bg-gray-800 py-8 px-6 shadow-md sm:rounded-lg sm:px-10">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <InputField
+              label="Email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              error={errors.email}
+              placeholder="you@example.com"
+              type="email"
+            />
 
-            {/* Password Field */}
-            <div>
-              <label htmlFor="password" className={`block text-sm font-medium ${secondaryTextColor}`}>
-                Password
-              </label>
-              <div className="mt-1 relative rounded-md shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaLock className={`h-5 w-5 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} />
-                </div>
-                <input
-                  id="password"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  autoComplete="current-password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className={`block w-full pl-10 pr-10 py-2 ${inputBg} border ${errors.password ? 'border-red-500' : borderColor} rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent sm:text-sm`}
-                  placeholder="••••••••"
-                />
-                <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className={`${theme === 'dark' ? 'text-gray-300 hover:text-gray-100' : 'text-gray-400 hover:text-gray-500'} focus:outline-none`}
-                  >
-                    {showPassword ? (
-                      <FaEyeSlash className="h-5 w-5" />
-                    ) : (
-                      <FaEye className="h-5 w-5" />
-                    )}
-                  </button>
-                </div>
-              </div>
-              {errors.password && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.password}</p>}
-            </div>
+            <PasswordField
+              label="Password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              error={errors.password}
+              placeholder="••••••••"
+              showPassword={showPassword}
+              setShowPassword={setShowPassword}
+            />
 
-            {/* Remember me and Forgot password */}
             <div className="flex items-center justify-between">
-              <div className="flex items-center">
+              <label className="flex items-center">
                 <input
-                  id="remember-me"
-                  name="remember-me"
                   type="checkbox"
-                  className={`h-4 w-4 text-teal-600 focus:ring-teal-500 ${borderColor} rounded`}
+                  className="form-checkbox h-4 w-4 text-teal-600 transition duration-150 ease-in-out"
                 />
-                <label htmlFor="remember-me" className={`ml-2 block text-sm ${secondaryTextColor}`}>
+                <span className="ml-2 block text-sm text-gray-900 dark:text-gray-200">
                   Remember me
-                </label>
-              </div>
+                </span>
+              </label>
 
-              <div className="text-sm">
-                <Link href="/auth/forgot-password" className="font-medium text-teal-500 hover:text-teal-400">
+              <div className="text-sm leading-5">
+                <Link href="/auth/forgot-password" className="font-medium text-teal-600 hover:text-teal-500">
                   Forgot your password?
                 </Link>
               </div>
             </div>
 
-            {/* Submit Button */}
             <div>
               <button
                 type="submit"
                 disabled={isLoading}
-                className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-colors duration-200 ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
+                className="w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
               >
-                {isLoading ? (
-                  <>
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Signing in...
-                  </>
-                ) : 'Sign in'}
+                {isLoading ? 'Signing in...' : 'Sign In'}
               </button>
             </div>
           </form>
 
-          <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className={`w-full border-t ${dividerColor}`} />
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className={`px-2 ${dividerTextBg} ${secondaryTextColor}`}>
-                  Don't have an account?{' '}
-                  <Link href="/auth/signup" className="font-medium text-teal-500 hover:text-teal-400">
-                    Sign up
-                  </Link>
-                </span>
-              </div>
-            </div>
-          </div>
+          <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
+            Don’t have an account?{' '}
+            <Link href="/auth/signup" className="font-medium text-teal-600 hover:text-teal-500">
+              Sign up
+            </Link>
+          </p>
         </div>
       </div>
     </div>
