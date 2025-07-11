@@ -1,4 +1,4 @@
-import Preloader from "./app/components/Preloader"
+import Preloader from "./components/Preloader"
 import Header from "./components/Header"
 import Hero from "./components/Hero"
 import Features from "./components/Features"
