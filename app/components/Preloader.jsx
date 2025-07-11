@@ -16,7 +16,7 @@ const Preloader = ({ children }) => {
     }, []);
 
     return (
-        <div className={`fixed inset-0 ${theme === 'dark' ? 'bg-gray-900/50' : 'bg-white/50'} backdrop-blur-sm z-50`}>
+        <div className={`fixed inset-0 ${theme === 'dark' ? 'bg-gray-900' : 'bg-white/50'} backdrop-blur-sm z-50`}>
             {loading ? (
                 <div className="h-screen flex flex-col justify-center items-center">
                     <motion.div
