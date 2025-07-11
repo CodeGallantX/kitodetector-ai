@@ -52,7 +52,7 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       const xhr = new XMLHttpRequest();
-      xhr.open('POST', 'https://kitodeck-be-5cal.onrender.com/api/auth/login/', true);
+      xhr.open('POST', 'https://kitodeck-be-5cal.onrender.com/api/login/', true);
       xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
 
       xhr.onreadystatechange = () => {
