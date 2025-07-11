@@ -73,51 +73,62 @@ export default function SignupPage() {
     return valid;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!validateForm()) return;
 
-    setIsLoading(true);
-    try {
-      const xhr = new XMLHttpRequest();
-      xhr.open('POST', 'https://kitodeck-be-5cal.onrender.com/api/signup/', true);
-      xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+  setIsLoading(true);
+  try {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', 'https://kitodeck-be-5cal.onrender.com/api/signup/', true);
+    xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
 
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-          setIsLoading(false);
-          if (xhr.status === 201) {
-            toast.success('Account created successfully! Please log in.');
-            setTimeout(() => router.push('/auth/login'), 1500);
-          } else {
-            const response = JSON.parse(xhr.responseText);
-            const newErrors = {};
-            if (response.username) newErrors.username = response.username[0];
-            if (response.email) newErrors.email = response.email[0];
-            if (response.password) newErrors.password = response.password[0];
-            setErrors(prev => ({ ...prev, ...newErrors }));
-            toast.error('Please fix the errors in the form');
-          }
-        }
-      };
-
-      xhr.onerror = function () {
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
         setIsLoading(false);
-        toast.error('Network error. Please try again.');
-      };
+        let responseData = {};
+        
+        try {
+          responseData = JSON.parse(xhr.responseText);
+        } catch (err) {
+          // If HTML or invalid JSON is returned
+          toast.error('Server returned an unexpected response. Please try again later.');
+          return;
+        }
 
-      xhr.send(JSON.stringify({
-        username: formData.username,
-        email: formData.email,
-        password: formData.password
-      }));
+        if (xhr.status === 201) {
+          toast.success('Account created successfully! Please log in.');
+          setTimeout(() => router.push('/auth/login'), 1500);
+        } else {
+          const newErrors = {};
+          if (responseData.username) newErrors.username = responseData.username[0];
+          if (responseData.email) newErrors.email = responseData.email[0];
+          if (responseData.password) newErrors.password = responseData.password[0];
+          setErrors(prev => ({ ...prev, ...newErrors }));
 
-    } catch (err) {
-      console.error('Unexpected error:', err);
-      toast.error('Something went wrong. Please try again later.');
+          toast.error(responseData?.detail || 'Please fix the errors in the form');
+        }
+      }
+    };
+
+    xhr.onerror = function () {
       setIsLoading(false);
-    }
-  };
+      toast.error('Network error. Please try again.');
+    };
+
+    xhr.send(JSON.stringify({
+      username: formData.username,
+      email: formData.email,
+      password: formData.password
+    }));
+
+  } catch (err) {
+    console.error('Unexpected error:', err);
+    toast.error('Something went wrong. Please try again later.');
+    setIsLoading(false);
+  }
+};
+
 
   return (
     <div className="relative min-h-screen bg-gray-50 dark:bg-gray-800 sm:dark:bg-gray-900 transition-colors duration-200">
