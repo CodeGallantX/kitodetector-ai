@@ -60,8 +60,10 @@ export default function LoginPage() {
           setIsLoading(false);
           if (xhr.status === 200) {
             const { access, refresh } = JSON.parse(xhr.responseText);
+
             localStorage.setItem('access_token', access);
             localStorage.setItem('refresh_token', refresh);
+            localStorage.setItem('user', JSON.stringify({ email: formData.email }));
 
             toast.success('Login successful! Redirecting...', {
               position: 'top-center',
