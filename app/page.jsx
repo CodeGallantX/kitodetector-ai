@@ -1,12 +1,12 @@
-import Preloader from "@/app/components/Preloader"
-import Header from "@/app/components/Header"
-import Hero from "@/app/components/Hero"
-import Features from "@/app/components/Features"
-import Pricing from "@/app/components/Pricing"
-import FAQ from "@/app/components/FAQs"
-import HelpCentre from "@/app/components/HelpCentre"
-import ScrollToTop from "@/app/components/ScrollToTop"
-import Footer from "@/app/components/Footer"
+import Preloader from "./app/components/Preloader"
+import Header from "./components/Header"
+import Hero from "./components/Hero"
+import Features from "./components/Features"
+import Pricing from "./components/Pricing"
+import FAQ from "./components/FAQs"
+import HelpCentre from "./components/HelpCentre"
+import ScrollToTop from "./components/ScrollToTop"
+import Footer from "./components/Footer"
 
 const App = () => {
     return (
