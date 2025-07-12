@@ -6,11 +6,11 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useTheme } from 'next-themes';
 import { FaMoon, FaSun, FaSignOutAlt } from 'react-icons/fa';
-import Header from '../components/dashboard/Header';
-import ProfileSection from '../components/dashboard/ProfileSection';
-import ChatScan from '../components/dashboard/ChatScan';
-import Navigation from '../components/dashboard/Navigation';
-import ImageScan from '../components/ImageScan';
+import Header from '@/app/components/dashboard/Header';
+import ProfileSection from '@/app/components/dashboard/ProfileSection';
+import ChatScan from '@/app/components/dashboard/ChatScan';
+import Navigation from '@/app/components/dashboard/Navigation';
+import ImageScan from '@/app/components/ImageScan';
 
 export default function DashboardPage() {
   const { theme, setTheme } = useTheme();
