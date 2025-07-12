@@ -10,7 +10,7 @@ import Header from '../components/dashboard/Header';
 import ProfileSection from '../components/dashboard/ProfileSection';
 import ChatScan from '../components/dashboard/ChatScan';
 import Navigation from '../components/dashboard/Navigation';
-import ImageScanner from '../components/ImageScanner';
+import ImageScanupdat from '../components/ImageScanner';
 
 export default function DashboardPage() {
   const { theme, setTheme } = useTheme();
@@ -154,7 +154,7 @@ export default function DashboardPage() {
           <main className="flex-1 w-full">
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 transition-all duration-200">
               {activeTab === 'profile' && <ProfileSection user={user} />}
-              {activeTab === 'image-scan' && <ImageScanner />}
+              {activeTab === 'image-scan' && <ImageScan />}
               {activeTab === 'chat-scan' && <ChatScan />}
             </div>
           </main>
