@@ -10,7 +10,7 @@ import Header from '@/app/components/dashboard/Header';
 import ProfileSection from '@/app/components/dashboard/ProfileSection';
 import ChatScan from '@/app/components/dashboard/ChatScan';
 import Navigation from '@/app/components/dashboard/Navigation';
-import ImageScan from '@/app/components/ImageScan';
+import ImageScan from '@/app/components/dashboard/ImageScan';
 
 export default function DashboardPage() {
   const { theme, setTheme } = useTheme();
