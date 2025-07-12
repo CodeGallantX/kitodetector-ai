@@ -60,7 +60,7 @@ export default function DashboardPage() {
           if (xhr.status === 200) {
             const data = JSON.parse(xhr.responseText);
             localStorage.setItem('access_token', data.access);
-            fetchUser(); // Retry after refreshing
+            fetchUser(); 
           } else {
             localStorage.clear();
             router.push('/auth/login');
