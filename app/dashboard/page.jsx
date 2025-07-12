@@ -5,13 +5,12 @@ import { useRouter } from 'next/navigation';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useTheme } from 'next-themes';
-import { FaChevronLeft, FaMoon, FaSun } from 'react-icons/fa6';
+import { FaMoon, FaSun } from 'react-icons/fa6';
 import Header from '../components/dashboard/Header';
 import ProfileSection from '../components/dashboard/ProfileSection';
 import ChatScan from '../components/dashboard/ChatScan';
 import Navigation from '../components/dashboard/Navigation';
 import ImageScanner from '../components/ImageScanner';
-import axios from 'axios';
 
 export default function DashboardPage() {
   const { theme, setTheme } = useTheme();
@@ -21,55 +20,57 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const userData = localStorage.getItem('user');
-      const accessToken = localStorage.getItem('access_token');
+    const accessToken = localStorage.getItem('access_token');
+    const refreshToken = localStorage.getItem('refresh_token');
 
-      if (!userData || !accessToken) {
-        router.push('/auth/login');
-        return;
-      }
+    if (!accessToken || !refreshToken) {
+      router.push('/auth/login');
+      return;
+    }
 
-      try {
-        const response = await axios.get('https://kitodeck-be-5cal.onrender.com/api/user/details/', {
-          headers: {
-            'Authorization': `Bearer ${accessToken}`
+    // Request user profile
+    const fetchUser = () => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', 'https://kitodeck-be-5cal.onrender.com/api/user/details/');
+      xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            const userData = JSON.parse(xhr.responseText);
+            setUser(userData);
+            setLoading(false);
+          } else if (xhr.status === 401) {
+            // Token expired or invalid
+            refreshAccessToken();
+          } else {
+            toast.error('Failed to load user data');
+            setLoading(false);
           }
-        });
+        }
+      };
+      xhr.send();
+    };
 
-        setUser(response.data);
-      } catch (error) {
-        if (error.response?.status === 401) {
-          try {
-            const refreshToken = localStorage.getItem('refresh_token');
-            const refreshResponse = await axios.post(
-              'https://kitodeck-be-5cal.onrender.com/api/token/refresh/',
-              { refresh: refreshToken }
-            );
-
-            localStorage.setItem('access_token', refreshResponse.data.access);
-            const userResponse = await axios.get('https://kitodeck-be-5cal.onrender.com/api/user/details/', {
-              headers: {
-                'Authorization': `Bearer ${refreshResponse.data.access}`
-              }
-            });
-
-            setUser(userResponse.data);
-          } catch (refreshError) {
-            console.error('Token refresh failed:', refreshError);
+    const refreshAccessToken = () => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', 'https://kitodeck-be-5cal.onrender.com/api/token/refresh/');
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            const data = JSON.parse(xhr.responseText);
+            localStorage.setItem('access_token', data.access);
+            fetchUser(); // Retry after refreshing
+          } else {
             localStorage.clear();
             router.push('/auth/login');
           }
-        } else {
-          console.error('Failed to fetch user details:', error);
-          toast.error('Failed to load user data');
         }
-      } finally {
-        setLoading(false);
-      }
+      };
+      xhr.send(JSON.stringify({ refresh: refreshToken }));
     };
 
-    checkAuth();
+    fetchUser();
   }, [router]);
 
   const handleSignOut = () => {
