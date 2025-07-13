@@ -59,7 +59,7 @@ const HelpCenter = () => {
   return (
     <section 
       id="helpCenter" 
-      className={`${sectionClasses} py-16 px-6 md:px-12 lg:px-20 transition-colors duration-300`}
+      className={`${sectionClasses} py-16 px-6 md:px-12 lg:px-20 transition-colors duration-300 scroll-mt-16`}
     >
       <motion.div 
         className="max-w-4xl mx-auto text-center"

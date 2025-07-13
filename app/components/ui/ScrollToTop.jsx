@@ -1,6 +1,6 @@
 "use client"
 import { useState, useEffect } from "react";
-import { MoveUp, MoveDown } from "lucide-react";
+import { ChevronUp, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
 
@@ -58,9 +58,9 @@ const ScrollToTop = () => {
           }`}
         >
           {scrollDirection === "up" ? (
-            <MoveUp className={`text-xl ${isDark ? "text-white" : "text-gray-900"}`} />
+            <ChevronUp className={`text-xl ${isDark ? "text-white" : "text-gray-900"}`} />
           ) : (
-            <MoveDown className={`text-xl ${isDark ? "text-white" : "text-gray-900"}`} />
+            <ChevronDown className={`text-xl ${isDark ? "text-white" : "text-gray-900"}`} />
           )}
         </motion.button>
       )}
