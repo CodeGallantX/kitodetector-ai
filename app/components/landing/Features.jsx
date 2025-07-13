@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { FaCamera, FaComments, FaHistory, FaShieldAlt, FaFlag, FaUpload } from "react-icons/fa";
+import { Camera, MessageCircle, History, Shield, Flag, Upload } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes"; // For theme management
 
@@ -9,27 +9,27 @@ const features = [
   {
     title: "Image Scan",
     description: "Upload or drag & drop an image for AI-powered Kito detection.",
-    icon: <FaCamera />,
+    icon: <Camera />,
   },
   {
     title: "Chat Transcript Scan",
     description: "Paste or upload a chat transcript and analyze potential threats.",
-    icon: <FaComments />,
+    icon: <MessageCircle />,
   },
   {
     title: "History & Feedback",
     description: "View past scans and provide feedback for AI improvements.",
-    icon: <FaHistory />,
+    icon: <History />,
   },
   {
     title: "Kito Awareness",
     description: "Learn about common Kito tactics and how to stay safe.",
-    icon: <FaShieldAlt />,
+    icon: <Shield />,
   },
   {
     title: "Report a Kito",
     description: "Report suspicious individuals to help protect others.",
-    icon: <FaFlag />,
+    icon: <Flag />,
   },
 ];
 
@@ -175,7 +175,7 @@ const Features = () => {
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
           >
-            <FaUpload className={`text-4xl ${themeClasses.uploadIcon} mx-auto mb-3`} />
+            <Upload className={`text-4xl ${themeClasses.uploadIcon} mx-auto mb-3`} />
             <p className={themeClasses.featureText}>Drag & Drop an image here</p>
             <input
               type="file"

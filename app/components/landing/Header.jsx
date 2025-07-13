@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { HiMenuAlt4 } from 'react-icons/hi';
 import { IoMdClose } from 'react-icons/io';
-import { FaSun, FaMoon } from "react-icons/fa6";
+import { FaSun, FaMoon } from "lucide-react";
 import { useTheme } from 'next-themes';
 
 const Header = () => {

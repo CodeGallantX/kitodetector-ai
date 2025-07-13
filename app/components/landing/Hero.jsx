@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { FaSun, FaMoon } from "react-icons/fa6";
+import { Sun, Moon } from "lucide-react";
 import { useTheme } from "next-themes";
 
 const Hero = () => {

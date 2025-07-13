@@ -1,7 +1,7 @@
 "use client";
 import { useTheme } from "next-themes";
 import Link from "next/link";
-import { FaGithub, FaTwitter, FaLinkedin } from "react-icons/fa";
+import { Github, Twitter, Linkedin } from "react-icons/fa";
 
 const Footer = () => {
   const { theme } = useTheme();
@@ -29,13 +29,13 @@ const Footer = () => {
             </p>
             <div className="flex space-x-4">
               <a href="#" className={footerClasses.link}>
-                <FaGithub size={20} />
+                <Github size={20} />
               </a>
               <a href="#" className={footerClasses.link}>
-                <FaTwitter size={20} />
+                <Twitter size={20} />
               </a>
               <a href="#" className={footerClasses.link}>
-                <FaLinkedin size={20} />
+                <Linkedin size={20} />
               </a>
             </div>
           </div>

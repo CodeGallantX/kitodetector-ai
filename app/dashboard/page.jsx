@@ -11,6 +11,7 @@ import ProfileSection from '@/app/components/dashboard/ProfileSection';
 import ChatScan from '@/app/components/dashboard/ChatScan';
 import Navigation from '@/app/components/dashboard/Navigation';
 import ImageScan from '@/app/components/dashboard/ImageScan';
+import Preloader from '../components/ui/Preloader';
 
 export default function DashboardPage() {
   const { theme, setTheme } = useTheme();
@@ -79,11 +80,7 @@ export default function DashboardPage() {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-500"></div>
-      </div>
-    );
+    <Preloader />
   }
 
   if (!user) return null;
@@ -151,7 +148,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Main content */}
-          <main className="flex-1 w-full">
+          <main className="w-full">
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 transition-all duration-200">
               {activeTab === 'profile' && <ProfileSection user={user} />}
               {activeTab === 'image-scan' && <ImageScan />}

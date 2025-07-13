@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { FaUser, FaEnvelope, FaChevronLeft } from 'react-icons/fa6';
+import { User, Envelope, ChevronLeft } from 'lucide-react/fa6';
 import Link from 'next/link';
 import InputField from '../../components/ui/InputField';
 import PasswordField from '../../components/ui/PasswordField';

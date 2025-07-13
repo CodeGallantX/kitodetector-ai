@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { FaChevronLeft } from 'react-icons/fa6';
+import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
@@ -115,7 +115,7 @@ export default function LoginPage() {
         className="absolute top-8 left-6 p-2 rounded-lg border border-gray-300 dark:border-white hover:border-teal-600 hover:bg-teal-600 hover:text-white transition-colors duration-300 ease-in-out"
         onClick={() => router.back()}
       >
-        <FaChevronLeft className="inline-block" /> Back
+        <ChevronLeft className="inline-block" /> Back
       </button>
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md">

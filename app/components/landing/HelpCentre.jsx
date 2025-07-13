@@ -1,5 +1,5 @@
 "use client";
-import { FaShieldAlt, FaUsers, FaSearch } from "react-icons/fa";
+import { Shield, Users, Search } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes"; // For theme handling
 
@@ -8,17 +8,17 @@ const helpTopics = [
   {
     title: "Kito Awareness",
     description: "Learn how to identify and report Kito activities to keep yourself safe online.",
-    icon: <FaShieldAlt className="text-teal-400 text-4xl" />,
+    icon: <ShieldAlt className="text-teal-400 text-4xl" />,
   },
   {
     title: "KlickCircle",
     description: "A secure community to discuss experiences and share scam prevention strategies.",
-    icon: <FaUsers className="text-teal-400 text-4xl" />,
+    icon: <Users className="text-teal-400 text-4xl" />,
   },
   {
     title: "Twinningle",
     description: "A database of reported Kito cases and AI-powered scam detection tools.",
-    icon: <FaSearch className="text-teal-400 text-4xl" />,
+    icon: <Search className="text-teal-400 text-4xl" />,
   },
 ];
 
