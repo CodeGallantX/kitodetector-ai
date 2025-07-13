@@ -5,10 +5,10 @@ export default function ProfileSection({ user }) {
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 transition-all duration-200">
       <div className="flex justify-between items-center mb-8">
         <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Profile Information</h2>
-        <button className="flex items-center gap-2 text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
+        {/* <button className="flex items-center gap-2 text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
           <Edit className="h-5 w-5" />
           <span className="text-sm font-medium">Edit Profile</span>
-        </button>
+        </button> */}
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
