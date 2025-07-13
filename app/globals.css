@@ -39,3 +39,30 @@ h1, h2, h3, h4, h5, h6 {
 body, p, a {
   font-family: "DM Sans",  sans-serif;
 }
+
+
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #14b8a6; 
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #0d9488; 
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #14b8a6 transparent;
+}
