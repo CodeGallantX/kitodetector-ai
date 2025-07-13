@@ -10,7 +10,7 @@ const Preloader = ({ children }) => {
     useEffect(() => {
         const timer = setTimeout(() => {
             setLoading(false);
-        }, 3000); // Updated to 5 seconds as per requirement
+        }, 3000); 
 
         return () => clearTimeout(timer);
     }, []);
@@ -21,20 +21,12 @@ const Preloader = ({ children }) => {
                 <div className="h-screen flex flex-col justify-center items-center">
                     <motion.div
                         className={`w-16 h-16 border-4 ${
-                            theme === 'dark' ? 'border-teal-400 border-t-transparent' : 'border-blue-500 border-t-transparent'
+                            theme === 'dark' ? 'border-teal-400 border-t-transparent' : 'border-teal-500 border-t-transparent'
                         } rounded-full animate-spin`}
                         initial={{ opacity: 0, scale: 0.5 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.5 }}
                     />
-                    {/* <motion.p
-                        className={`mt-4 text-lg font-medium ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2 }}
-                    >
-                        Loading KitoDeck AI...
-                    </motion.p> */}
                 </div>
             ) : (
                 <motion.div
