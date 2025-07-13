@@ -46,22 +46,6 @@ const Navigation = ({ activeTab, setActiveTab, onSignOut }) => {
           ))}
         </ul>
 
-        <div className="mt-8 pt-4 border-t border-gray-200 dark:border-gray-700">
-          <ul className="space-y-1">
-            <li>
-              <button className="w-full text-left px-4 py-3 rounded-lg transition-all duration-200 flex items-center gap-3 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">
-                <Settings className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-                Settings
-              </button>
-            </li>
-            <li>
-              <button className="w-full text-left px-4 py-3 rounded-lg transition-all duration-200 flex items-center gap-3 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">
-                <HelpCircle className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-                Help & Support
-              </button>
-            </li>
-          </ul>
-        </div>
       </nav>
 
       <div className="p-4 border-t border-gray-200 dark:border-gray-700">
