@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useTheme } from 'next-themes';
-import { FaMoon, FaSun, FaSignOutAlt } from 'react-icons/fa';
+import { Moon, Sun, LogOut } from 'lucide-react';
 import Header from '@/app/components/dashboard/Header';
 import ProfileSection from '@/app/components/dashboard/ProfileSection';
 import ChatScan from '@/app/components/dashboard/ChatScan';
@@ -115,14 +115,14 @@ export default function DashboardPage() {
           className="p-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-teal-600 hover:border-teal-600 hover:text-white transition-colors duration-300"
           aria-label="Toggle theme"
         >
-          {theme === 'dark' ? <FaSun className="h-5 w-5" /> : <FaMoon className="h-5 w-5" />}
+          {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
         </button>
         <button
           onClick={handleSignOut}
           className="p-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-red-600 hover:border-red-600 hover:text-white transition-colors duration-300"
           aria-label="Sign out"
         >
-          <FaSignOutAlt className="h-5 w-5" />
+          <LogOut className="h-5 w-5" />
         </button>
       </div>
 

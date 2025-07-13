@@ -1,7 +1,7 @@
 "use client";
 import { useTheme } from "next-themes";
 import Link from "next/link";
-import { Github, Twitter, Linkedin } from "react-icons/fa";
+import { Github, Twitter, Linkedin } from "lucide-react";
 
 const Footer = () => {
   const { theme } = useTheme();
