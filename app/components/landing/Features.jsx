@@ -57,47 +57,45 @@ const itemVariants = {
 };
 
 const Features = () => {
-  // State management for component functionality
-  const [uploadedImage, setUploadedImage] = useState(null);
-  const [chatText, setChatText] = useState("");
-  const [dragging, setDragging] = useState(false);
-  const { theme } = useTheme(); // Get current theme (light/dark)
+  // const [uploadedImage, setUploadedImage] = useState(null);
+  // const [chatText, setChatText] = useState("");
+  // const [dragging, setDragging] = useState(false);
+  const { theme } = useTheme(); 
 
-  // Handle image file upload via file input
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file && file.type.startsWith("image/")) {
-      setUploadedImage(URL.createObjectURL(file));
-    }
-  };
+  // const handleImageUpload = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file && file.type.startsWith("image/")) {
+  //     setUploadedImage(URL.createObjectURL(file));
+  //   }
+  // };
 
-  // Handle image drop on drag and drop area
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setDragging(false);
-    const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith("image/")) {
-      setUploadedImage(URL.createObjectURL(file));
-    }
-  };
+  // // Handle image drop on drag and drop area
+  // const handleDrop = (e) => {
+  //   e.preventDefault();
+  //   setDragging(false);
+  //   const file = e.dataTransfer.files[0];
+  //   if (file && file.type.startsWith("image/")) {
+  //     setUploadedImage(URL.createObjectURL(file));
+  //   }
+  // };
 
-  // Visual feedback during drag over
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setDragging(true);
-  };
+  // // Visual feedback during drag over
+  // const handleDragOver = (e) => {
+  //   e.preventDefault();
+  //   setDragging(true);
+  // };
 
-  // Reset drag state when leaving drop area
-  const handleDragLeave = () => setDragging(false);
+  // // Reset drag state when leaving drop area
+  // const handleDragLeave = () => setDragging(false);
 
-  // Simple analysis of chat text (placeholder functionality)
-  const handleChatAnalyze = () => {
-    if (chatText.trim() === "") {
-      alert("Please enter some text to analyze");
-      return;
-    }
-    alert("Chat analyzed: No threats detected! ✅");
-  };
+  // // Simple analysis of chat text (placeholder functionality)
+  // const handleChatAnalyze = () => {
+  //   if (chatText.trim() === "") {
+  //     alert("Please enter some text to analyze");
+  //     return;
+  //   }
+  //   alert("Chat analyzed: No threats detected! ✅");
+  // };
 
   // Determine theme-based classes
   const getThemeClasses = () => {
@@ -107,15 +105,15 @@ const Features = () => {
       textColor: isDark ? "text-white" : "text-gray-800",
       featureCard: isDark ? "bg-white/10" : "bg-white",
       featureText: isDark ? "text-gray-300" : "text-gray-600",
-      dropZone: isDark
-        ? dragging
-          ? "border-teal-400 bg-gray-800"
-          : "border-gray-600"
-        : dragging
-        ? "border-teal-400 bg-gray-100"
-        : "border-gray-300",
-      uploadIcon: isDark ? "text-gray-400" : "text-gray-500",
-      textArea: isDark ? "bg-gray-800" : "bg-white border border-gray-300",
+      // dropZone: isDark
+      //   ? dragging
+      //     ? "border-teal-400 bg-gray-800"
+      //     : "border-gray-600"
+      //   : dragging
+      //   ? "border-teal-400 bg-gray-100"
+      //   : "border-gray-300",
+      // uploadIcon: isDark ? "text-gray-400" : "text-gray-500",
+      // textArea: isDark ? "bg-gray-800" : "bg-white border border-gray-300",
     };
   };
 
@@ -126,7 +124,6 @@ const Features = () => {
       id="features"
       className={`px-6 md:px-8 lg:px-16 xl:px-24 py-16 ${themeClasses.sectionBg} ${themeClasses.textColor}`}
     >
-      {/* Animated title with scroll trigger */}
       <motion.h2
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -137,7 +134,6 @@ const Features = () => {
         Features
       </motion.h2>
 
-      {/* Features grid with staggered animations */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -158,15 +154,13 @@ const Features = () => {
         ))}
       </motion.div>
 
-      {/* Interactive demo section with animations */}
-      <motion.div
+      {/* <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ delay: 0.2 }}
         className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8"
       >
-        {/* Image Scan Section */}
         <div className={`p-6 ${themeClasses.featureCard} backdrop-blur-lg rounded-2xl shadow-lg`}>
           <h3 className="text-xl font-semibold mb-4">Image Scan</h3>
           <div
@@ -202,7 +196,6 @@ const Features = () => {
           )}
         </div>
 
-        {/* Chat Transcript Section */}
         <div className={`p-6 ${themeClasses.featureCard} backdrop-blur-lg rounded-2xl shadow-lg`}>
           <h3 className="text-xl font-semibold mb-4">Chat Transcript Scan</h3>
           <textarea
@@ -221,7 +214,7 @@ const Features = () => {
             Analyze Chat
           </motion.button>
         </div>
-      </motion.div>
+      </motion.div> */}
     </section>
   );
 };

@@ -85,7 +85,7 @@ const Footer = () => {
 
         <div className={`mt-12 pt-8 border-t ${footerClasses.border}`}>
           <p className="text-center">
-            © {new Date().getFullYear()} KitoDetector AI. All rights reserved.
+            &copy; {new Date().getFullYear()} <span className="font-semibold">KitoDeck AI</span>. All rights reserved.
           </p>
         </div>
       </div>

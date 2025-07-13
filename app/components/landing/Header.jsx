@@ -16,10 +16,10 @@ const Header = () => {
         <div className="w-full">
             <header className="w-full">
                 {/* Main Navigation Bar */}
-                <div className="z-30 px-6 lg:px-10 py-4 md:py-6 fixed backdrop-blur-md w-11/12 lg:w-5/6 left-1/2 -translate-x-1/2 bg-white/30 dark:bg-gray-800/30 top-6 rounded-full flex flex-row items-center justify-between border border-white/20 dark:border-gray-600/20 shadow-sm">
+                <div className="z-30 px-6 lg:px-10 py-4 md:py-6 fixed backdrop-blur-md w-11/12 lg:w-11/12 left-1/2 -translate-x-1/2 bg-white/30 dark:bg-gray-800/30 top-6 rounded-full flex flex-row items-center justify-between border border-white/20 dark:border-gray-600/20 shadow-sm">
                     {/* Logo */}
                     <Link href="/" className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white font-outfit">
-                        Kito Deck AI
+                        KitoDeck AI
                     </Link>
 
                     {/* Desktop Navigation */}
@@ -28,8 +28,8 @@ const Header = () => {
                         <Link href="#about" className="hover:text-teal-500 transition-colors">About</Link>
                         <Link href="#features" className="hover:text-teal-500 transition-colors">Features</Link>
                         <Link href="#pricing" className="hover:text-teal-500 transition-colors">Pricing</Link>
+                        <Link href="#faqs" className="hover:text-teal-500 transition-colors">FAQs</Link>
                         <Link href="#helpCenter" className="hover:text-teal-500 transition-colors">Help Center</Link>
-                        <Link href="#contact" className="hover:text-teal-500 transition-colors">Contact</Link>
                     </nav>
 
                     <div className="flex items-center justify-center gap-4">
