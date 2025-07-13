@@ -80,8 +80,7 @@ export default function ProfileSection({ user }) {
               <div>
                 <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Last Login</label>
                 <p className="text-gray-900 dark:text-white font-medium">
-                  <p className="text-sm text-gray-600">
-                    Last login:{' '}
+                  <p className="text-sm text-gray-500">
                     {new Date().toLocaleString('en-US', {
                       dateStyle: 'medium',
                       timeStyle: 'short',
