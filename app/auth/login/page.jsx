@@ -140,15 +140,16 @@ export default function LoginPage() {
             />
 
             <PasswordField
-              label="Password"
+              id="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
               error={errors.password}
               placeholder="••••••••"
-              showPassword={showPassword}
-              setShowPassword={setShowPassword}
+              show={showPassword}
+              toggle={() => setShowPassword((prev) => !prev)}
             />
+
 
             <div className="flex items-center justify-between">
               <label className="flex items-center">
