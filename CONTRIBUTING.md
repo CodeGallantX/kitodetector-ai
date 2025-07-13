@@ -13,7 +13,7 @@ We welcome contributions from the community! This guide will help you get starte
 1. Fork the repository
 2. Clone your fork locally:
    ```bash
-   git clone https://github.com/codegallantx/kitodeck.git
+   git clone https://github.com/codegallantx/kitodetector-ai.git
    cd kitodeck
    ```
 3. Install dependencies:
