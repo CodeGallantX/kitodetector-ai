@@ -1,4 +1,4 @@
-# KitoDeck - Content Safety Dashboard
+<!-- # KitoDeck - Content Safety Dashboard -->
 
 ![KitoDeck Banner](public/next.svg)
 
