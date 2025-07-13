@@ -17,7 +17,7 @@ export default function Header({ user }) {
           
           <div className="relative inline-flex items-center justify-center w-8 h-8 md:w-9 md:h-9 rounded-full bg-teal-100 dark:bg-teal-900 text-teal-600 dark:text-teal-300 font-medium">
             {avatarLetter}
-            <span className="absolute top-0 right-0 block h-2 w-2 md:h-2.5 md:w-2.5 rounded-full bg-green-400 ring-2 ring-white dark:ring-gray-800"></span>
+            <span className="absolute bottom-0 right-0 block h-2 w-2 md:h-2.5 md:w-2.5 rounded-full bg-green-400 ring-2 ring-white dark:ring-gray-800"></span>
           </div>
         </div>
       </div>
