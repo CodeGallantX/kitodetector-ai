@@ -10,7 +10,7 @@ export default function ProfileSection({ user }) {
           <span className="text-sm font-medium">Edit Profile</span>
         </button> */}
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* User Card */}
         <div className="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
@@ -26,7 +26,7 @@ export default function ProfileSection({ user }) {
               <p className="text-sm text-gray-500 dark:text-gray-400">Member since {new Date(user.date_joined).toLocaleDateString()}</p>
             </div>
           </div>
-          
+
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <Shield className="h-5 w-5 text-gray-400 dark:text-gray-500" />
@@ -37,7 +37,7 @@ export default function ProfileSection({ user }) {
             </div>
           </div>
         </div>
-        
+
         {/* Details Section */}
         <div className="space-y-6">
           <div className="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
@@ -45,26 +45,26 @@ export default function ProfileSection({ user }) {
               <User className="h-5 w-5 text-teal-600 dark:text-teal-400" />
               Personal Information
             </h3>
-            
+
             <div className="space-y-4">
               <div>
                 <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Username</label>
                 <p className="text-gray-900 dark:text-white font-medium">{user.username}</p>
               </div>
-              
+
               <div>
                 <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Email Address</label>
                 <p className="text-gray-900 dark:text-white font-medium">{user.email}</p>
               </div>
             </div>
           </div>
-          
+
           <div className="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
             <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
               <Calendar className="h-5 w-5 text-teal-600 dark:text-teal-400" />
               Account Details
             </h3>
-            
+
             <div className="space-y-4">
               <div>
                 <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Member Since</label>
@@ -76,14 +76,18 @@ export default function ProfileSection({ user }) {
                   })}
                 </p>
               </div>
-              
+
               <div>
                 <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Last Login</label>
                 <p className="text-gray-900 dark:text-white font-medium">
-                  {new Date(user.last_login).toLocaleString('en-US', {
-                    dateStyle: 'medium',
-                    timeStyle: 'short'
-                  })}
+                  <p className="text-sm text-gray-600">
+                    Last login:{' '}
+                    {new Date().toLocaleString('en-US', {
+                      dateStyle: 'medium',
+                      timeStyle: 'short',
+                    })}
+                  </p>
+
                 </p>
               </div>
             </div>

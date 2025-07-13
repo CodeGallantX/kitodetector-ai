@@ -19,7 +19,7 @@ const PricingCard = ({ plan, isPopular }) => {
       } ${isPopular ? "ring-2 ring-teal-500 scale-[1.02]" : ""}`}
     >
       {isPopular && (
-        <span className="absolute -top-3 right-4 bg-teal-600 text-white text-sm px-3 py-1 rounded-full shadow-md">
+        <span className="absolute -top-3 right-36 bg-teal-600 text-white text-sm px-3 py-1 rounded-full shadow-md">
           Most Popular
         </span>
       )}
