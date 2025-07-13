@@ -142,7 +142,7 @@ Built with Next.js 14 and Tailwind CSS, KitoDeck delivers a 98 Lighthouse perfor
 
 ### Installation
 ```bash
-git clone https://github.com/codegallantx/kitodeck.git
+git clone https://github.com/codegallantx/kitodetector-ai.git
 cd kitodeck
 npm install
 npm run dev
@@ -182,6 +182,10 @@ API            →   Client: New Access Token Issued
 - **Code Splitting**: Dynamic imports for heavy components
 - **Image Optimization**: WebP conversion + lazy loading
 - **Bundle Analysis**: Regular size monitoring
+
+
+![Kitodeck Lighthouse Report](public/metrics.png)
+
 
 ## Performance Optimization
 
