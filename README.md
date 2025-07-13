@@ -61,7 +61,7 @@ Built with Next.js 14 and Tailwind CSS, KitoDeck delivers a 98 Lighthouse perfor
 - **Vercel** Hosting
 
 ## Project Structure
-
+<!-- 
 ```
 ├── app/
 │   ├── auth/              # Auth pages (login/signup)
@@ -75,6 +75,62 @@ Built with Next.js 14 and Tailwind CSS, KitoDeck delivers a 98 Lighthouse perfor
 ├── public/                # Static assets
 ├── styles/                # Global styles
 └── types/                 # TypeScript definitions
+``` -->
+
+```
+─ .gitignore
+├── LICENSE
+├── README.md
+├── app
+    ├── auth
+    │   ├── login
+    │   │   └── page.jsx
+    │   └── signup
+    │   │   └── page.jsx
+    ├── components
+    │   ├── dashboard
+    │   │   ├── ChatScan.jsx
+    │   │   ├── Header.jsx
+    │   │   ├── ImageScan.jsx
+    │   │   ├── Navigation.jsx
+    │   │   ├── ProfileSection.jsx
+    │   │   └── ScrollToTop.jsx
+    │   ├── landing
+    │   │   ├── FAQs.jsx
+    │   │   ├── Features.jsx
+    │   │   ├── Footer.jsx
+    │   │   ├── Header.jsx
+    │   │   ├── HelpCentre.jsx
+    │   │   ├── Hero.jsx
+    │   │   └── Pricing.jsx
+    │   └── ui
+    │   │   ├── InputField.jsx
+    │   │   ├── PasswordField.jsx
+    │   │   ├── Preloader.jsx
+    │   │   ├── ScrollToTop.jsx
+    │   │   └── ThemeToggle.jsx
+    ├── dashboard
+    │   └── page.jsx
+    ├── favicon.ico
+    ├── fonts
+    │   ├── DMSans-VariableFont_opsz,wght.ttf
+    │   └── SpaceGrotesk-VariableFont_wght.ttf
+    ├── globals.css
+    ├── layout.jsx
+    └── page.jsx
+├── eslint.config.mjs
+├── jsconfig.json
+├── next.config.mjs
+├── package-lock.json
+├── package.json
+├── postcss.config.mjs
+├── public
+    ├── file.svg
+    ├── globe.svg
+    ├── next.svg
+    ├── vercel.svg
+    └── window.svg
+└── tailwind.config.mjs
 ```
 
 ## Getting Started
