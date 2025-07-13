@@ -7,7 +7,6 @@ import Pricing from "@/app/components/landing/Pricing"
 import FAQ from "@/app/components/landing/FAQs"
 import HelpCentre from "@/app/components/landing/HelpCentre"
 import Footer from "@/app/components/landing/Footer"
-
 const App = () => {
     return (
         <Preloader>
