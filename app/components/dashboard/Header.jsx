@@ -1,17 +1,17 @@
 'use client';
 
-import Link from 'next/link';
-import { Moon, Sun, LogOut, Menu, X } from 'lucide-react';
+import { useRouter } from 'next/router';
+import { Moon, Sun, LogOut, Menu, X, Heading1, Router } from 'lucide-react';
 import { useTheme } from 'next-themes';
 
 export default function Header({ user, mobileMenuOpen, setMobileMenuOpen, handleSignOut, isLoggingOut }) {
   const { theme, setTheme } = useTheme();
   const avatarLetter = user?.username?.charAt(0)?.toUpperCase() || 'U';
+  const router = useRouter();
 
   return (
     <header className="bg-white dark:bg-gray-800 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-        {/* Mobile menu button */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           className="md:hidden p-2 rounded-md bg-white dark:bg-gray-800"
@@ -25,9 +25,9 @@ export default function Header({ user, mobileMenuOpen, setMobileMenuOpen, handle
         </button>
 
         {/* Logo */}
-        <Link href="/" className="text-xl font-bold text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
+        <h1 onClick={() => router.push('/')} className="text-3xl text-center md:text-left font-bold text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
           KitoDeck
-        </Link>
+        </h1>
         
         {/* Right side controls */}
         <div className="flex items-center space-x-4">
@@ -54,7 +54,6 @@ export default function Header({ user, mobileMenuOpen, setMobileMenuOpen, handle
             )}
           </button>
 
-          {/* Logout button */}
           <button
             onClick={handleSignOut}
             disabled={isLoggingOut}
