@@ -1,4 +1,4 @@
-import { Lock, Eye, EyeSlash } from 'lucide-react';
+import { Lock, Eye, EyeOff } from 'lucide-react';
 
 const PasswordField = ({ id, name, value, onChange, error, placeholder, show, toggle }) => {
   return (
@@ -21,7 +21,7 @@ const PasswordField = ({ id, name, value, onChange, error, placeholder, show, to
             placeholder={placeholder}
           />
           <button type="button" onClick={toggle} className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-            {show ? <EyeSlash className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+            {show ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
           </button>
         </div>
       </fieldset>

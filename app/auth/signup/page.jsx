@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { User, Envelope, ChevronLeft } from 'lucide-react/fa6';
+import { User, Envelope, ChevronLeft, Mail } from 'lucide-react';
 import Link from 'next/link';
 import InputField from '../../components/ui/InputField';
 import PasswordField from '../../components/ui/PasswordField';
@@ -136,7 +136,7 @@ export default function SignupPage() {
         className="absolute top-8 left-6 p-2 rounded-lg border border-gray-600 dark:border-white hover:border-teal-600 hover:bg-teal-600 hover:text-white transition-colors duration-300 ease-in-out"
         onClick={() => router.back()}
       >
-        <FaChevronLeft className="inline-block" /> Back
+        <ChevronLeft className="inline-block" /> Back
       </button>
 
       <div className="container mx-auto px-4 py-28 sm:py-12">
@@ -149,9 +149,9 @@ export default function SignupPage() {
           <div className="md:bg-white dark:bg-gray-800 sm:shadow-lg rounded-2xl p-2 md:p-8">
             <form className="space-y-5" onSubmit={handleSubmit}>
               {/* Username */}
-              <InputField id="username" name="username" icon={<FaUser />} value={formData.username} onChange={handleChange} error={errors.username} placeholder="john_doe" />
+              <InputField id="username" name="username" icon={<User />} value={formData.username} onChange={handleChange} error={errors.username} placeholder="john_doe" />
               {/* Email */}
-              <InputField id="email" name="email" type="email" icon={<FaEnvelope />} value={formData.email} onChange={handleChange} error={errors.email} placeholder="your@email.com" />
+              <InputField id="email" name="email" type="email" icon={<Mail />} value={formData.email} onChange={handleChange} error={errors.email} placeholder="your@email.com" />
               {/* Password */}
               <PasswordField id="password" name="password" value={formData.password} onChange={handleChange} error={errors.password} placeholder="••••••••" show={showPassword} toggle={() => setShowPassword(!showPassword)} />
               {/* Confirm Password */}
