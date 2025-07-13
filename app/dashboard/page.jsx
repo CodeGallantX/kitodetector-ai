@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -28,44 +29,40 @@ export default function DashboardPage() {
       return;
     }
 
-    const fetchUser = () => {
-      const xhr = new XMLHttpRequest();
-      xhr.open('GET', 'https://kitodeck-be-5cal.onrender.com/api/user/details/');
-      xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
-      xhr.onreadystatechange = () => {
-        if (xhr.readyState === 4) {
-          if (xhr.status === 200) {
-            const userData = JSON.parse(xhr.responseText);
-            setUser(userData);
-            setLoading(false);
-          } else if (xhr.status === 401) {
-            refreshAccessToken();
-          } else {
-            toast.error('Failed to load user data');
-            setLoading(false);
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get('https://kitodeck-be-5cal.onrender.com/api/user/details/', {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
           }
+        });
+        setUser(response.data);
+        setLoading(false);
+      } catch (error) {
+        if (error.response?.status === 401) {
+          refreshAccessToken();
+        } else {
+          toast.error('Failed to load user data');
+          setLoading(false);
         }
-      };
-      xhr.send();
+      }
     };
 
-    const refreshAccessToken = () => {
-      const xhr = new XMLHttpRequest();
-      xhr.open('POST', 'https://kitodeck-be-5cal.onrender.com/api/token/refresh/');
-      xhr.setRequestHeader('Content-Type', 'application/json');
-      xhr.onreadystatechange = () => {
-        if (xhr.readyState === 4) {
-          if (xhr.status === 200) {
-            const data = JSON.parse(xhr.responseText);
-            localStorage.setItem('access_token', data.access);
-            fetchUser(); 
-          } else {
-            localStorage.clear();
-            router.push('/auth/login');
-          }
-        }
-      };
-      xhr.send(JSON.stringify({ refresh: refreshToken }));
+    const refreshAccessToken = async () => {
+      try {
+        const response = await axios.post(
+          'https://kitodeck-be-5cal.onrender.com/api/token/refresh/',
+          { refresh: refreshToken },
+          { headers: { 'Content-Type': 'application/json' } }
+        );
+
+        const newAccess = response.data.access;
+        localStorage.setItem('access_token', newAccess);
+        await fetchUser();
+      } catch (error) {
+        localStorage.clear();
+        router.push('/auth/login');
+      }
     };
 
     fetchUser();
@@ -77,22 +74,20 @@ export default function DashboardPage() {
       const accessToken = localStorage.getItem('access_token');
       const refreshToken = localStorage.getItem('refresh_token');
 
-      const response = await fetch('https://kitodeck-be-5cal.onrender.com/api/logout/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`
-        },
-        body: JSON.stringify({ refresh_token: refreshToken })
-      });
-
-      if (!response.ok) {
-        throw new Error('Logout failed');
-      }
+      await axios.post(
+        'https://kitodeck-be-5cal.onrender.com/api/logout/',
+        { refresh_token: refreshToken },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`
+          }
+        }
+      );
 
       localStorage.clear();
-      router.push('/auth/login');
       toast.success('Logged out successfully');
+      router.push('/auth/login');
     } catch (error) {
       console.error('Logout error:', error);
       toast.error('Failed to logout properly');
@@ -103,19 +98,16 @@ export default function DashboardPage() {
     }
   };
 
-  if (loading) {
-    return <Preloader />;
-  }
-
+  if (loading) return <Preloader />;
   if (!user) return null;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
       <ToastContainer position="top-right" theme="dark" />
-      
-      <Header 
-        user={user} 
-        mobileMenuOpen={mobileMenuOpen} 
+
+      <Header
+        user={user}
+        mobileMenuOpen={mobileMenuOpen}
         setMobileMenuOpen={setMobileMenuOpen}
         handleSignOut={handleSignOut}
         isLoggingOut={isLoggingOut}
@@ -123,24 +115,22 @@ export default function DashboardPage() {
 
       <div className="pt-20 pb-6 px-4 md:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row gap-6">
-          {/* Navigation - hidden on mobile when menu is closed */}
-          <div 
+          <div
             className={`${mobileMenuOpen ? 'block' : 'hidden'} md:block fixed md:static inset-0 z-10 md:z-auto bg-white dark:bg-gray-800 md:bg-transparent pt-20 md:pt-0`}
             onClick={() => setMobileMenuOpen(false)}
           >
-            <div 
+            <div
               className="w-64 md:w-48 h-full md:h-auto p-4 md:p-0 bg-white dark:bg-gray-800 md:bg-transparent shadow-lg md:shadow-none"
               onClick={(e) => e.stopPropagation()}
             >
-              <Navigation 
-                activeTab={activeTab} 
-                setActiveTab={setActiveTab} 
+              <Navigation
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
                 onSignOut={handleSignOut}
               />
             </div>
           </div>
 
-          {/* Main content */}
           <main className="w-full">
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 transition-all duration-200">
               {activeTab === 'profile' && <ProfileSection user={user} />}

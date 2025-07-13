@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import axios from 'axios';
 import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -50,60 +51,58 @@ export default function LoginPage() {
     if (!validateForm()) return;
 
     setIsLoading(true);
+
     try {
-      const xhr = new XMLHttpRequest();
-      xhr.open('POST', 'https://kitodeck-be-5cal.onrender.com/api/login/', true);
-      xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-
-      xhr.onreadystatechange = () => {
-        if (xhr.readyState === 4) {
-          setIsLoading(false);
-          if (xhr.status === 200) {
-            const { access, refresh } = JSON.parse(xhr.responseText);
-
-            localStorage.setItem('access_token', access);
-            localStorage.setItem('refresh_token', refresh);
-            localStorage.setItem('user', JSON.stringify({ email: formData.email }));
-
-            toast.success('Login successful! Redirecting...', {
-              position: 'top-center',
-              autoClose: 2000,
-              theme: theme === 'dark' ? 'dark' : 'light',
-            });
-
-            setTimeout(() => router.push('/dashboard'), 2000);
-          } else {
-            let message = 'Login failed. Please try again.';
-            try {
-              const response = JSON.parse(xhr.responseText);
-              if (xhr.status === 401) message = response.detail || 'Invalid email or password';
-              else if (xhr.status === 400) {
-                if (response.email) setErrors((prev) => ({ ...prev, email: response.email[0] }));
-                if (response.password) setErrors((prev) => ({ ...prev, password: response.password[0] }));
-                message = 'Please fix the errors in the form';
-              } else if (xhr.status === 500) {
-                message = 'Server error. Please try again later.';
-              }
-            } catch (_) {}
-
-            toast.error(message, {
-              position: 'top-center',
-              autoClose: 5000,
-              theme: theme === 'dark' ? 'dark' : 'light',
-            });
-          }
+      const response = await axios.post(
+        'https://kitodeck-be-5cal.onrender.com/api/login/',
+        {
+          email: formData.email,
+          password: formData.password,
+        },
+        {
+          headers: { 'Content-Type': 'application/json' },
         }
-      };
+      );
 
-      xhr.send(JSON.stringify({ email: formData.email, password: formData.password }));
+      const { access, refresh } = response.data;
+
+      localStorage.setItem('access_token', access);
+      localStorage.setItem('refresh_token', refresh);
+      localStorage.setItem('user', JSON.stringify({ email: formData.email }));
+
+      toast.success('Login successful! Redirecting...', {
+        position: 'top-center',
+        autoClose: 2000,
+        theme: theme === 'dark' ? 'dark' : 'light',
+      });
+
+      setTimeout(() => router.push('/dashboard'), 2000);
     } catch (error) {
-      console.error('Login error:', error);
       setIsLoading(false);
-      toast.error('An unexpected error occurred. Please try again.', {
+
+      let message = 'Login failed. Please try again.';
+
+      if (error.response) {
+        const { status, data } = error.response;
+
+        if (status === 401) {
+          message = data.detail || 'Invalid email or password';
+        } else if (status === 400) {
+          if (data.email) setErrors((prev) => ({ ...prev, email: data.email[0] }));
+          if (data.password) setErrors((prev) => ({ ...prev, password: data.password[0] }));
+          message = 'Please fix the errors in the form';
+        } else if (status === 500) {
+          message = 'Server error. Please try again later.';
+        }
+      }
+
+      toast.error(message, {
         position: 'top-center',
         autoClose: 5000,
         theme: theme === 'dark' ? 'dark' : 'light',
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
