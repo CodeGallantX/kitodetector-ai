@@ -57,7 +57,7 @@ export default function ImageScan() {
       <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Kito Image Scanner</h2>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="space-y-6">
+        <div className="space-y-6 w-full">
           <form onSubmit={handleSubmit} className="space-y-6 w-full">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
