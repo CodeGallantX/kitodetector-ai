@@ -112,15 +112,14 @@ npm run dev
 ## Architecture Decisions
 
 ### Authentication Flow
-```mermaid
-sequenceDiagram
-    User->>Client: Login
-    Client->>API: POST /auth/login
-    API-->>Client: Access + Refresh Tokens
-    Client->>API: Protected Request
-    API-->>Client: 401 (Expired)
-    Client->>API: POST /auth/refresh
-    API-->>Client: New Access Token
+```
+User           →   Client: Login  
+Client         →   API: POST /auth/login  
+API            →   Client: Returns Access + Refresh Tokens  
+Client         →   API: Makes Protected Request  
+API            →   Client: 401 Unauthorized (Access Token Expired)  
+Client         →   API: POST /auth/refresh  
+API            →   Client: New Access Token Issued  
 ```
 
 ### Performance Strategies
