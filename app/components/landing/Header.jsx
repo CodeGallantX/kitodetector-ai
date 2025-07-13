@@ -1,9 +1,7 @@
 "use client";
 import { useState } from 'react';
 import Link from 'next/link';
-import { HiMenuAlt4 } from 'react-icons/hi';
-import { IoMdClose } from 'react-icons/io';
-import { FaSun, FaMoon } from "lucide-react";
+import { Sun, Moon, Menu, X } from "lucide-react";
 import { useTheme } from 'next-themes';
 
 const Header = () => {
@@ -41,7 +39,7 @@ const Header = () => {
                             className="hidden lg:block p-2 rounded-full bg-white dark:bg-gray-800 shadow-lg text-teal-500 dark:text-teal-300 hover:scale-110 transition-transform"
                             aria-label="Toggle theme"
                         >
-                            {theme === 'dark' ? <FaSun size={20} /> : <FaMoon size={20} />}
+                            {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
                         </button>
                         
                         <Link
@@ -60,14 +58,14 @@ const Header = () => {
                             className="p-2 rounded-full bg-white dark:bg-gray-800 shadow-lg text-teal-500 dark:text-teal-300 hover:scale-110 transition-transform"
                             aria-label="Toggle theme"
                         >
-                            {theme === 'dark' ? <FaSun size={20} /> : <FaMoon size={20} />}
+                            {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
                         </button>
                         <button 
                             onClick={toggleSidebar} 
                             className="text-3xl text-gray-900 dark:text-white"
                             aria-label="Open menu"
                         >
-                            <HiMenuAlt4 />
+                            <Menu />
                         </button>
                     </div>
                 </div>
@@ -89,7 +87,7 @@ const Header = () => {
                         className="absolute top-6 right-6 text-gray-900 dark:text-white text-3xl"
                         aria-label="Close menu"
                     >
-                        <IoMdClose />
+                        <X />
                     </button>
                     
                     <nav className="flex flex-col items-center space-y-8 text-lg w-full px-6">
