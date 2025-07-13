@@ -121,8 +121,8 @@ export default function DashboardPage() {
         isLoggingOut={isLoggingOut}
       />
 
-      <div className="pt-20 pb-8 px-4 md:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row gap-6 max-w-7xl mx-auto">
+      <div className="pt-20 pb-6 px-4 md:px-6 lg:px-8">
+        <div className="flex flex-col md:flex-row gap-6">
           {/* Navigation - hidden on mobile when menu is closed */}
           <div 
             className={`${mobileMenuOpen ? 'block' : 'hidden'} md:block fixed md:static inset-0 z-10 md:z-auto bg-white dark:bg-gray-800 md:bg-transparent pt-20 md:pt-0`}
