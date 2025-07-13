@@ -8,7 +8,7 @@ const helpTopics = [
   {
     title: "Kito Awareness",
     description: "Learn how to identify and report Kito activities to keep yourself safe online.",
-    icon: <ShieldAlt className="text-teal-400 text-4xl" />,
+    icon: <Shield className="text-teal-400 text-4xl" />,
   },
   {
     title: "KlickCircle",
