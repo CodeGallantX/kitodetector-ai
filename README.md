@@ -27,11 +27,13 @@ KitoDeck is an AI-powered content safety platform that helps users analyze and m
 
 Built with Next.js 14 and Tailwind CSS, KitoDeck delivers a fairly good Lighthouse performance score while maintaining full accessibility compliance.
 
-> Here's a Video Demo
-<video width="100%" controls>
-    <source src="/public/KitoDeck_Final.mp4" type="video/mp4">
-    Your browser does not support video tag
-</video>
+### Project Walkthrough
+[![Watch Demo](https://img.shields.io/badge/🎥-Watch_Demo-blue?style=for-the-badge&logo=github)](https://youtu.be/_ASpffdo1SY)
+
+> Click the image to watch the demo
+[![Watch the demo](https://img.youtube.com/vi/_ASpffdo1SY/hqdefault.jpg)](https://youtu.be/_ASpffdo1SY)
+
+
 
 ## Key Features
 
