@@ -25,7 +25,13 @@ KitoDeck is an AI-powered content safety platform that helps users analyze and m
 - **Chat Analysis**: Detection of harmful language in text conversations with flagged message highlighting
 - **User Management**: Secure JWT authentication with token refresh capabilities
 
-Built with Next.js 14 and Tailwind CSS, KitoDeck delivers a 98 Lighthouse performance score while maintaining full accessibility compliance.
+Built with Next.js 14 and Tailwind CSS, KitoDeck delivers a fairly good Lighthouse performance score while maintaining full accessibility compliance.
+
+> Here's a Video Demo
+<video width="100%" controls>
+    <source src="/public/KitoDeck_Final.mp4" type="video/mp4">
+    Your browser does not support video tag
+</video>
 
 ## Key Features
 
@@ -161,7 +167,7 @@ npm run dev
 - Implemented responsive dashboard
 
 ### Phase 3: Optimization 
-- Performance tuning (98 Lighthouse)
+- Performance tuning (fairly good Lighthouse)
 - Accessibility improvements
 - Comprehensive testing suite
 
@@ -220,7 +226,7 @@ npm run test:e2e # Playwright tests
 - Consistent styling system
 
 ✅ **Performance Focus**  
-- Achieved 98 Lighthouse score
+- Achieved fairly good Lighthouse score
 - 60% reduction in load times
 
 ### Challenges
