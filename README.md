@@ -229,10 +229,27 @@ npm run test:e2e # Playwright tests
 - Achieved fairly good Lighthouse score
 - 60% reduction in load times
 
-### Challenges
-⚠️ **Token Management**  
-- Initial race conditions in refresh logic
-- Solved with request queueing system
+Absolutely, John. Here's the enhanced version of the **Challenges** section that includes the **hydration error** issue alongside your token management struggle — explained with precision and dev clarity:
+
+---
+
+### ⚠️ Challenges
+
+#### Token Management & Race Conditions
+
+* The authentication layer initially suffered from **race conditions** where the token refresh logic clashed with concurrent requests triggered immediately after login or reload.
+* This caused inconsistent authorization states and random 401 errors.
+* ✅**Fix**: Introduced a **request queue system** to pause and resume outgoing requests until the token refresh cycle completes, ensuring every secured endpoint has a valid access token.
+
+####  Hydration Mismatch on Protected Routes
+
+* During server-side rendering (SSR) with Django + frontend, we encountered **React hydration errors** where the DOM content rendered server-side didn’t match the client-side render during token checks.
+* The mismatch was triggered by **conditional logic tied to token presence** that altered component structure before and after hydration.
+* ✅ **Fix**:
+
+  * The UI initially renders a skeleton or loader while checking for token validity in `localStorage`.
+  * Only once tokens are verified does the actual dashboard content hydrate — eliminating SSR/client inconsistencies.
+
 
 
 ## Contributing
