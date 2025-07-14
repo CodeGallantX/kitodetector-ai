@@ -1,6 +1,6 @@
 <!-- # KitoDeck - Content Safety Dashboard -->
 
-![KitoDeck Banner](public/next.svg)
+![KitoDeck Banner](https://ik.imagekit.io/mshcgnjju/KitoDeck%20Hero.png)
 
 ## Table of Contents
 - [Project Overview](#project-overview)
